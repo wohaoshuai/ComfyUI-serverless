@@ -34,12 +34,12 @@ class ComfyConnector:
 
     def __init__(self):
         if not hasattr(self, 'initialized'):
-            self.urlport = self.find_available_port()
+            self.urlport = 8188 # self.find_available_port()
             self.server_address = f"http://{API_URL}:{self.urlport}"
             self.client_id = INSTANCE_IDENTIFIER
             self.ws_address = f"ws://{API_URL}:{self.urlport}/ws?clientId={self.client_id}"
             self.ws = WebSocket()
-            self.start_api()
+            # self.start_api()
             self.initialized = True
 
     def find_available_port(self): # If the initial port is already in use, this method finds an available port to start the API server on
