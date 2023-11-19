@@ -11,4 +11,4 @@ images = api.generate_images(prompt)
 print('images', images)
 if images and len(images) > 0:
     for i, image in enumerate(images):
-        image.save(f"~/outputs/test{i}.png")
+        image.save(f"outputs/test{i}.png")
