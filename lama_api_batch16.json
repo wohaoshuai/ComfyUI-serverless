@@ -1,0 +1,531 @@
+{
+  "4": {
+    "inputs": {
+      "ckpt_name": "xxmix9realisticsdxl_v10.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "5": {
+    "inputs": {
+      "width": 768,
+      "height": 768,
+      "batch_size": 16
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "6": {
+    "inputs": {
+      "text": [
+        "94",
+        0
+      ],
+      "clip": [
+        "95",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7": {
+    "inputs": {
+      "text": [
+        "94",
+        1
+      ],
+      "clip": [
+        "95",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "19": {
+    "inputs": {
+      "filename_prefix": "2023-11-19/ComfyUI_20231119_235918",
+      "images": [
+        "222",
+        0
+      ]
+    },
+    "class_type": "SaveImage"
+  },
+  "49": {
+    "inputs": {
+      "vae_name": "sdxl_vae.safetensors"
+    },
+    "class_type": "VAELoader"
+  },
+  "83": {
+    "inputs": {
+      "model_name": "fourx-UltraSharp.pth"
+    },
+    "class_type": "UpscaleModelLoader"
+  },
+  "84": {
+    "inputs": {
+      "upscale_model": [
+        "83",
+        0
+      ],
+      "image": [
+        "86",
+        0
+      ]
+    },
+    "class_type": "ImageUpscaleWithModel"
+  },
+  "85": {
+    "inputs": {
+      "upscale_method": "area",
+      "scale_by": [
+        "184",
+        3
+      ],
+      "image": [
+        "84",
+        0
+      ]
+    },
+    "class_type": "ImageScaleBy"
+  },
+  "86": {
+    "inputs": {
+      "samples": [
+        "162",
+        0
+      ],
+      "vae": [
+        "49",
+        0
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "88": {
+    "inputs": {
+      "lora_name": "lcm-lora-sdxl.safetensors",
+      "strength_model": 1,
+      "strength_clip": 1,
+      "model": [
+        "4",
+        0
+      ],
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "LoraLoader"
+  },
+  "92": {
+    "inputs": {
+      "text_positive": [
+        "187",
+        0
+      ],
+      "text_negative": "(semi-realistic, cgi, 2.5d, 3d:1.3), (anthropomorphic, humanoid:1.2), watermark, signature, text, frame, mirror, polaroid, deformed iris, deformed pupils, dark environment, blurry",
+      "style": "base",
+      "log_prompt": "No"
+    },
+    "class_type": "SDXLPromptStyler"
+  },
+  "93": {
+    "inputs": {
+      "text_positive": [
+        "92",
+        0
+      ],
+      "text_negative": [
+        "92",
+        1
+      ],
+      "style": "base",
+      "log_prompt": "No"
+    },
+    "class_type": "SDXLPromptStyler"
+  },
+  "94": {
+    "inputs": {
+      "text_positive": [
+        "93",
+        0
+      ],
+      "text_negative": [
+        "93",
+        1
+      ],
+      "style": "base",
+      "log_prompt": "No"
+    },
+    "class_type": "SDXLPromptStyler"
+  },
+  "95": {
+    "inputs": {
+      "lora_name": "lcm-lora-sdxl.safetensors",
+      "strength_model": 0,
+      "strength_clip": 0,
+      "model": [
+        "88",
+        0
+      ],
+      "clip": [
+        "88",
+        1
+      ]
+    },
+    "class_type": "LoraLoader"
+  },
+  "107": {
+    "inputs": {
+      "image": "7e00394f-f6d6-436f-8de8-83c8e984aa80_assembo_ai.png",
+      "choose file to upload": "image"
+    },
+    "class_type": "LoadImage"
+  },
+  "116": {
+    "inputs": {
+      "strength": 0.52,
+      "start_percent": 0,
+      "end_percent": 0.9,
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "control_net": [
+        "172",
+        0
+      ],
+      "image": [
+        "191",
+        0
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced"
+  },
+  "139": {
+    "inputs": {
+      "model_name": "bbox/face_yolov8m.pt"
+    },
+    "class_type": "UltralyticsDetectorProvider"
+  },
+  "140": {
+    "inputs": {
+      "model_name": "sam_vit_b_01ec64.pth",
+      "device_mode": "CPU"
+    },
+    "class_type": "SAMLoader"
+  },
+  "162": {
+    "inputs": {
+      "seed": 547109734563784,
+      "steps": 4,
+      "cfg": 1.5,
+      "sampler_name": "lcm",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "95",
+        0
+      ],
+      "positive": [
+        "116",
+        0
+      ],
+      "negative": [
+        "116",
+        1
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "163": {
+    "inputs": {
+      "seed": 547109734563784,
+      "steps": 4,
+      "cfg": 1.5,
+      "sampler_name": "lcm",
+      "scheduler": "normal",
+      "denoise": 0.35000000000000003,
+      "model": [
+        "95",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "175",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "167": {
+    "inputs": {
+      "images": [
+        "107",
+        0
+      ]
+    },
+    "class_type": "PreviewImage"
+  },
+  "168": {
+    "inputs": {
+      "safe": "enable",
+      "resolution": 512
+    },
+    "class_type": "PiDiNetPreprocessor"
+  },
+  "169": {
+    "inputs": {
+      "images": [
+        "191",
+        0
+      ]
+    },
+    "class_type": "PreviewImage"
+  },
+  "170": {
+    "inputs": {
+      "control_net_name": "control_v11p_sd15_canny_fp16.safetensors"
+    },
+    "class_type": "ControlNetLoader"
+  },
+  "171": {
+    "inputs": {
+      "control_net_name": "kohya_controllllite_xl_depth.safetensors"
+    },
+    "class_type": "ControlNetLoader"
+  },
+  "172": {
+    "inputs": {
+      "control_net_name": "diffusers_xl_canny_full.safetensors"
+    },
+    "class_type": "ControlNetLoader"
+  },
+  "175": {
+    "inputs": {
+      "upscale_method": "area",
+      "scale_by": [
+        "184",
+        2
+      ],
+      "samples": [
+        "162",
+        0
+      ]
+    },
+    "class_type": "LatentUpscaleBy"
+  },
+  "177": {
+    "inputs": {
+      "tile_size": 512,
+      "pixels": [
+        "85",
+        0
+      ],
+      "vae": [
+        "49",
+        0
+      ]
+    },
+    "class_type": "VAEEncodeTiled"
+  },
+  "179": {
+    "inputs": {
+      "tile_size": 512,
+      "samples": [
+        "163",
+        0
+      ],
+      "vae": [
+        "49",
+        0
+      ]
+    },
+    "class_type": "VAEDecodeTiled"
+  },
+  "184": {
+    "inputs": {
+      "desiredXSIZE": 1024,
+      "desiredYSIZE": 1024
+    },
+    "class_type": "RecommendedResCalcSD15"
+  },
+  "187": {
+    "inputs": {
+      "text": "a sofa in a living room with indoor plants and flowers",
+      "seed": 767,
+      "autorefresh": "Yes"
+    },
+    "class_type": "DPRandomGenerator"
+  },
+  "188": {
+    "inputs": {
+      "text": "A {red|green|blue}",
+      "seed": 320,
+      "autorefresh": "Yes"
+    },
+    "class_type": "DPFeelingLucky"
+  },
+  "191": {
+    "inputs": {
+      "low_threshold": 100,
+      "high_threshold": 200,
+      "resolution": 512,
+      "image": [
+        "107",
+        0
+      ]
+    },
+    "class_type": "CannyEdgePreprocessor"
+  },
+  "192": {
+    "inputs": {
+      "resolution": 512
+    },
+    "class_type": "ShufflePreprocessor"
+  },
+  "193": {
+    "inputs": {
+      "preprocessor": "ShufflePreprocessor",
+      "resolution": 512,
+      "image": [
+        "198",
+        0
+      ]
+    },
+    "class_type": "AIO_Preprocessor"
+  },
+  "194": {
+    "inputs": {
+      "images": [
+        "193",
+        0
+      ]
+    },
+    "class_type": "PreviewImage"
+  },
+  "197": {
+    "inputs": {
+      "control_net_name": "control_v11e_sd15_shuffle_fp16.safetensors"
+    },
+    "class_type": "ControlNetLoader"
+  },
+  "198": {
+    "inputs": {
+      "image": "fae5549a-625d-495d-937c-ca5c33184b09_assembo_ai.jpeg",
+      "choose file to upload": "image"
+    },
+    "class_type": "LoadImage"
+  },
+  "201": {
+    "inputs": {
+      "model_name": "RealESRGAN_x2.pth"
+    },
+    "class_type": "UpscaleModelLoader"
+  },
+  "207": {
+    "inputs": {
+      "image": "medium-sofa-crop (1).png",
+      "choose file to upload": "image"
+    },
+    "class_type": "LoadImage"
+  },
+  "222": {
+    "inputs": {
+      "x": 0,
+      "y": 0,
+      "resize_source": true,
+      "destination": [
+        "229",
+        0
+      ],
+      "source": [
+        "207",
+        0
+      ],
+      "mask": [
+        "223",
+        0
+      ]
+    },
+    "class_type": "ImageCompositeMasked"
+  },
+  "223": {
+    "inputs": {
+      "mask": [
+        "207",
+        1
+      ]
+    },
+    "class_type": "InvertMask"
+  },
+  "227": {
+    "inputs": {
+      "yaml_config": "config.yaml"
+    },
+    "class_type": "YamlConfigLoader"
+  },
+  "228": {
+    "inputs": {
+      "config": [
+        "227",
+        0
+      ]
+    },
+    "class_type": "LamaModelLoader"
+  },
+  "229": {
+    "inputs": {
+      "image": [
+        "86",
+        0
+      ],
+      "mask": [
+        "240",
+        0
+      ],
+      "lama": [
+        "228",
+        0
+      ],
+      "config": [
+        "227",
+        0
+      ]
+    },
+    "class_type": "LamaApply"
+  },
+  "240": {
+    "inputs": {
+      "dilation": 30,
+      "mask": [
+        "246",
+        0
+      ]
+    },
+    "class_type": "ImpactDilateMask"
+  },
+  "246": {
+    "inputs": {
+      "image": "medium-sofa-crop (1).png",
+      "channel": "green",
+      "choose file to upload": "image"
+    },
+    "class_type": "LoadImageMask"
+  }
+}
