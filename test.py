@@ -9,5 +9,6 @@ prompt = json.load(open('workflow_api.json'))
 print(prompt)
 images = api.generate_images(prompt) 
 print('images', images)
-# for i, image in enumerate(images):
-#     image.save(f"~/outputs/test{i}.png")
+if images and len(images) > 0:
+    for i, image in enumerate(images):
+        image.save(f"~/outputs/test{i}.png")
