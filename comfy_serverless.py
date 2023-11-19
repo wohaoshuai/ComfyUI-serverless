@@ -93,7 +93,7 @@ class ComfyConnector:
 
     def kill_api(self): # This method is used to kill the API server
         if self._process is not None and self._process.poll() is None:
-            self._process.kill()
+            # self._process.kill()
             self._process = None
             print("API process killed")
 
