@@ -78,7 +78,10 @@ class ComfyConnector:
                 self.ws.connect(self.ws_address)
                 print(f"Web server is running (status code 200). Now trying test image...")
                 test_image = self.generate_images(test_payload)
-                test_image.save('test_image.png')
+                index = 1
+                for image in test_image:
+                    image.save('test_image' + index + '.png')
+                    index += 1
                 print(f"Type of test_image: {type(test_image)}")
                 print(f"Test image: {test_image}")
                 if test_image is not None:  # this ensures that the API server is actually running and not just the web server
