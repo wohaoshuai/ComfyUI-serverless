@@ -13,7 +13,7 @@ def process_images():
 
     prompt = json.load(open('workflow_api_masked.json'))
     prompt["162"]["inputs"]["seed"] = random.randint(1,4294967294)
-    prompt["5"]["inputs"]["batch_size"] = 1
+    prompt["5"]["inputs"]["batch_size"] = 16
     prompt["5"]["inputs"]["width"] = 768
     prompt["5"]["inputs"]["height"] = 768
 
