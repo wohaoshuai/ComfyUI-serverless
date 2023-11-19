@@ -12,6 +12,8 @@ import os
 import subprocess
 from typing import List
 import sys
+from dotenv import load_dotenv
+load_dotenv()
 
 APP_NAME = os.getenv('APP_NAME') # Name of the application
 API_COMMAND_LINE = os.getenv('API_COMMAND_LINE') # Command line to start the API server, e.g. "python3 ComfyUI/main.py"; warning: do not add parameter --port as it will be passed later
