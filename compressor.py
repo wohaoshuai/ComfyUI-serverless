@@ -30,6 +30,12 @@ def save_encoded_images_to_file(encoded_images, filename):
         for encoded_image in encoded_images:
             f.write(encoded_image.decode() + "\n")
 
+def save_encoded_images_to_string(encoded_images):
+    encoded_string = ""
+    for encoded_image in encoded_images:
+        encoded_string += encoded_image.decode() + "\n"
+    return encoded_string
+
 def read_encoded_images_from_file(filename):
     with open(filename, "r") as f:
         encoded_images = [line.strip() for line in f]
