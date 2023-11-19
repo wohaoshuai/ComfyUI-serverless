@@ -12,8 +12,6 @@ def process_images():
     api = ComfyConnector()
     prompt = json.load(open('workflow_api.json'))
     prompt["162"]["inputs"]["seed"] = random.randint(1,4294967294)
-    api.replace_key_value(prompt, )
-    
     images = api.generate_images(prompt)
     
     if images and len(images) > 0:
