@@ -23,11 +23,11 @@ if images and len(images) > 0:
     save_encoded_images_to_file(encoded_images, "encoded_images.txt")
     
     # Read the encoded images from the file
-    encoded_images = read_encoded_images_from_file("encoded_images.txt")
+    # encoded_images = read_encoded_images_from_file("encoded_images.txt")
     
     # Decode the images back into a list of PIL Images
-    decoded_images = decode_images(encoded_images)
+    # decoded_images = decode_images(encoded_images)
     
     # Save the decoded images to individual files
-    for i, image in enumerate(decoded_images):
-        image.save(f"outputs/test{i}.png")
+    # for i, image in enumerate(decoded_images):
+    #     image.save(f"outputs/test{i}.png")
