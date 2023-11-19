@@ -11,7 +11,7 @@ CORS(app)
 def process_images():
     api = ComfyConnector()
 
-    prompt = json.load(open('workflow-masked.json'))
+    prompt = json.load(open('workflow_api_masked.json'))
     prompt["162"]["inputs"]["seed"] = random.randint(1,4294967294)
     prompt["5"]["inputs"]["batch_size"] = 9
     prompt["5"]["inputs"]["width"] = 768
