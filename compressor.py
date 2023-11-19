@@ -15,10 +15,10 @@ def encode_images(images, quality=80):
         compressed_image = compressed_image.getvalue()
         
         # Compress the image bytes using zlib
-        compressed_bytes = zlib.compress(compressed_image)
+        # compressed_bytes = zlib.compress(compressed_image)
         
         # Encode the compressed bytes as base64
-        encoded_bytes = base64.b64encode(compressed_bytes)
+        encoded_bytes = base64.b64encode(compressed_image)
         
         # Append the encoded image to the list
         encoded_images.append(encoded_bytes)
