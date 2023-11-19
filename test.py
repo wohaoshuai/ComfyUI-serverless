@@ -3,6 +3,7 @@ import json
 from compressor import *
 from flask import Flask, jsonify
 from flask_cors import CORS
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -10,7 +11,8 @@ CORS(app)
 def process_images():
     api = ComfyConnector()
     prompt = json.load(open('workflow_api.json'))
-    print(prompt)
+    prompt["162"]["inputs"]["seed"] = random.randint(1,4294967294)
+    api.replace_key_value(prompt, )
     
     images = api.generate_images(prompt)
     
