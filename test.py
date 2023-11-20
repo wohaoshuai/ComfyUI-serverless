@@ -36,7 +36,7 @@ def process_images(text, batch_size = 16, w=768, h=768):
         return None
 
 @app.route('/gen_encoded_images', methods=['POST'])
-def get_encoded_images():
+def gen_encoded_images():
     # Parse the JSON input
     data = request.get_json()
     input_image_base64 = data['input_image']
