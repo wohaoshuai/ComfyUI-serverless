@@ -17,12 +17,13 @@ def process_images(text, batch_size = 16, w=768, h=768):
     prompt["5"]["inputs"]["batch_size"] = batch_size
     prompt["5"]["inputs"]["width"] = w
     prompt["5"]["inputs"]["height"] = h
-    prompt["207"]["inputs"]["image"] = 'input_imag.png'
+    prompt["207"]["inputs"]["image"] = 'input_image.png'
     prompt["198"]["inputs"]["image"] = 'shuffle.png'
     if text:
         prompt["187"]["inputs"]["text"] = text
     else:
         prompt["187"]["inputs"]["text"] = 'product shot with a creative background, 4k, leica, commercial photography'
+    print('process_image')
 
     images = api.generate_images(prompt)
     
@@ -43,13 +44,13 @@ def gen_encoded_images():
     # shuffle_image_base64 = data['shuffle_image']
     text = data['prompt']
     batch_size = data['batch_size']
-    print('input', input_image_base64)
+    # print('input', input_image_base64)
     print('text', text)
 
     # Decode base64 strings to images
     input_image = base64_to_image(input_image_base64)
     # shuffle_image = base64_to_image(shuffle_image_base64)
-
+    print('image', input_image)
     # Save the images as local files
     save_image(input_image, 'input_image.png')
     # save_image(shuffle_image, 'shuffle_image.png')
