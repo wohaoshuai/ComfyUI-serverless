@@ -7,7 +7,7 @@ def encode_images(images, quality=80):
     encoded_images = []
     for i, image in enumerate(images):
         # Resize the image to 256x256
-        resized_image = image.resize((256, 256))
+        resized_image = image.resize((400, 400))
         
         # Compress the image with lossy quality
         compressed_image = io.BytesIO()
