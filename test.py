@@ -12,13 +12,12 @@ CORS(app)
 def process_images(text, batch_size = 16, w=768, h=768):
     api = ComfyConnector()
 
-    prompt = json.load(open('lama_api_batch16.json'))
+    prompt = json.load(open('new.json'))
     prompt["162"]["inputs"]["seed"] = random.randint(1,4294967294)
     prompt["5"]["inputs"]["batch_size"] = min(16, batch_size)
     prompt["5"]["inputs"]["width"] = w
     prompt["5"]["inputs"]["height"] = h
     prompt["207"]["inputs"]["image"] = 'input_image.png'
-    prompt["107"]["inputs"]["image"] = 'input_image.png'
     prompt["198"]["inputs"]["image"] = 'shuffle.png'
     if text:
         prompt["187"]["inputs"]["text"] = text
