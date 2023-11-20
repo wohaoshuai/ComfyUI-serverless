@@ -14,7 +14,7 @@ def process_images(text, batch_size = 16, w=768, h=768):
 
     prompt = json.load(open('lama_api_batch16.json'))
     prompt["162"]["inputs"]["seed"] = random.randint(1,4294967294)
-    prompt["5"]["inputs"]["batch_size"] = batch_size
+    prompt["5"]["inputs"]["batch_size"] = min(16, batch_size)
     prompt["5"]["inputs"]["width"] = w
     prompt["5"]["inputs"]["height"] = h
     prompt["207"]["inputs"]["image"] = 'input_image.png'
@@ -55,7 +55,7 @@ def gen_encoded_images():
     save_image(input_image, 'input_image.png')
     # save_image(shuffle_image, 'shuffle_image.png')
 
-    encoded_text = process_images(text, batch_size=1)
+    encoded_text = process_images(text, batch_size=batch_size)
 
     if encoded_text:
         return jsonify({'encoded_text': encoded_text})
