@@ -41,7 +41,7 @@
   },
   "19": {
     "inputs": {
-      "filename_prefix": "2023-11-22/ComfyUI_20231122_234500",
+      "filename_prefix": "2023-11-23/ComfyUI_20231123_000834",
       "images": [
         "249",
         0
@@ -177,7 +177,7 @@
   },
   "116": {
     "inputs": {
-      "strength": 0.3,
+      "strength": 0.53,
       "start_percent": 0,
       "end_percent": 0.9,
       "positive": [
@@ -214,11 +214,11 @@
   },
   "162": {
     "inputs": {
-      "seed": 885177817379531,
-      "steps": 8,
-      "cfg": 1.5,
+      "seed": 885177817379532,
+      "steps": 4,
+      "cfg": 1.2,
       "sampler_name": "lcm",
-      "scheduler": "karras",
+      "scheduler": "normal",
       "denoise": 1,
       "model": [
         "95",
@@ -241,7 +241,7 @@
   },
   "163": {
     "inputs": {
-      "seed": 885177817379531,
+      "seed": 885177817379532,
       "steps": 4,
       "cfg": 1.5,
       "sampler_name": "lcm",
@@ -324,7 +324,7 @@
   "187": {
     "inputs": {
       "text": "(a photo of New York Street, with a human model:1.4)",
-      "seed": 661,
+      "seed": 268,
       "autorefresh": "Yes"
     },
     "class_type": "DPRandomGenerator"
@@ -384,7 +384,7 @@
       "y": 0,
       "resize_source": true,
       "destination": [
-        "86",
+        "229",
         0
       ],
       "source": [
@@ -421,6 +421,27 @@
       ]
     },
     "class_type": "LamaModelLoader"
+  },
+  "229": {
+    "inputs": {
+      "image": [
+        "86",
+        0
+      ],
+      "mask": [
+        "240",
+        0
+      ],
+      "lama": [
+        "228",
+        0
+      ],
+      "config": [
+        "227",
+        0
+      ]
+    },
+    "class_type": "LamaApply"
   },
   "240": {
     "inputs": {
