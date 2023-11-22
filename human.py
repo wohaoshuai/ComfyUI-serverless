@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-def process_images(text, batch_size = 16, w=768, h=768):
+def process_images(text, batch_size = 16, w=1024, h=1024):
     api = ComfyConnector()
 
     prompt = json.load(open('human_api.json'))

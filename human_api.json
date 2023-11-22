@@ -41,7 +41,7 @@
   },
   "19": {
     "inputs": {
-      "filename_prefix": "2023-11-22/ComfyUI_20231122_233539",
+      "filename_prefix": "2023-11-22/ComfyUI_20231122_234258",
       "images": [
         "249",
         0
@@ -214,7 +214,7 @@
   },
   "162": {
     "inputs": {
-      "seed": 885177817379530,
+      "seed": 885177817379531,
       "steps": 4,
       "cfg": 1.5,
       "sampler_name": "lcm",
@@ -241,7 +241,7 @@
   },
   "163": {
     "inputs": {
-      "seed": 885177817379530,
+      "seed": 885177817379531,
       "steps": 4,
       "cfg": 1.5,
       "sampler_name": "lcm",
@@ -324,7 +324,7 @@
   "187": {
     "inputs": {
       "text": "(a photo of New York Street, with a human model:1.4)",
-      "seed": 924,
+      "seed": 661,
       "autorefresh": "Yes"
     },
     "class_type": "DPRandomGenerator"
@@ -479,8 +479,8 @@
   "249": {
     "inputs": {
       "upscale_method": "nearest-exact",
-      "width": 256,
-      "height": 256,
+      "width": 1024,
+      "height": 1024,
       "crop": "disabled",
       "image": [
         "222",
