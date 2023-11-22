@@ -12,7 +12,7 @@ CORS(app)
 def process_images(text, batch_size = 16, w=768, h=768):
     api = ComfyConnector()
 
-    prompt = json.load(open('human-init-beta.json'))
+    prompt = json.load(open('human_api.json'))
     prompt["162"]["inputs"]["seed"] = random.randint(1,4294967294)
     prompt["5"]["inputs"]["batch_size"] = min(16, batch_size)
     prompt["5"]["inputs"]["width"] = w
