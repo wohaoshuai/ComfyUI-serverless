@@ -41,7 +41,7 @@
   },
   "19": {
     "inputs": {
-      "filename_prefix": "2023-11-22/ComfyUI_20231122_234258",
+      "filename_prefix": "2023-11-22/ComfyUI_20231122_234500",
       "images": [
         "249",
         0
@@ -215,7 +215,7 @@
   "162": {
     "inputs": {
       "seed": 885177817379531,
-      "steps": 4,
+      "steps": 8,
       "cfg": 1.5,
       "sampler_name": "lcm",
       "scheduler": "karras",
@@ -384,7 +384,7 @@
       "y": 0,
       "resize_source": true,
       "destination": [
-        "229",
+        "86",
         0
       ],
       "source": [
@@ -421,27 +421,6 @@
       ]
     },
     "class_type": "LamaModelLoader"
-  },
-  "229": {
-    "inputs": {
-      "image": [
-        "86",
-        0
-      ],
-      "mask": [
-        "240",
-        0
-      ],
-      "lama": [
-        "228",
-        0
-      ],
-      "config": [
-        "227",
-        0
-      ]
-    },
-    "class_type": "LamaApply"
   },
   "240": {
     "inputs": {
