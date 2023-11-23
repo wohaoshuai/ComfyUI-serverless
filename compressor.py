@@ -3,11 +3,11 @@ import zlib
 import base64
 import io
 
-def encode_images(images, quality=80):
+def encode_images(images, size=400, quality=80):
     encoded_images = []
     for i, image in enumerate(images):
         # Resize the image to 256x256
-        resized_image = image.resize((400, 400))
+        resized_image = image.resize((size, size))
         
         # Compress the image with lossy quality
         compressed_image = io.BytesIO()

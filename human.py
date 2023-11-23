@@ -29,7 +29,7 @@ def process_images(text, batch_size = 16, w=1024, h=1024):
     
     if images and len(images) > 0:
         # Encode the images into a single file
-        encoded_images = encode_images(images)
+        encoded_images = encode_images(images, size=768)
         # Save the encoded images to a string
         encoded_text = save_encoded_images_to_string(encoded_images)
         return encoded_text
