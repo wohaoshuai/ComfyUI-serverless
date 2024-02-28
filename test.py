@@ -35,7 +35,7 @@ def process_images(w=768, h=768):
 def gen_encoded_images():
     # Parse the JSON input
     data = request.get_json()
-    input_image_base64 = data['input_image']
+    # input_image_base64 = data['input_image']
     # shuffle_image_base64 = data['shuffle_image']
     # text = data['prompt']
     # batch_size = data['batch_size']
@@ -43,11 +43,11 @@ def gen_encoded_images():
     # print('text', text)
 
     # Decode base64 strings to images
-    input_image = base64_to_image(input_image_base64)
+    # input_image = base64_to_image(input_image_base64)
     # shuffle_image = base64_to_image(shuffle_image_base64)
-    print('image', input_image)
+    # print('image', input_image)
     # Save the images as local files
-    save_image(input_image, 'input_image.png')
+    # save_image(input_image, 'input_image.png')
     # save_image(shuffle_image, 'shuffle_image.png')
 
     encoded_text = process_images()
