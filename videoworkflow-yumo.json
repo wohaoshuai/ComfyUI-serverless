@@ -127,7 +127,7 @@
         "Node name for S&R": "LoadImage"
       },
       "widgets_values": [
-        "SVD_00001_.png",
+        "input_image.png",
         "image"
       ]
     },

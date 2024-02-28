@@ -9,20 +9,15 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-def process_images(text, batch_size = 16, w=768, h=768):
+def process_images(w=768, h=768):
     api = ComfyConnector()
 
-    prompt = json.load(open('new.json'))
-    prompt["162"]["inputs"]["seed"] = random.randint(1,4294967294)
-    prompt["5"]["inputs"]["batch_size"] = min(16, batch_size)
-    prompt["5"]["inputs"]["width"] = w
-    prompt["5"]["inputs"]["height"] = h
-    prompt["207"]["inputs"]["image"] = 'input_image.png'
-    prompt["198"]["inputs"]["image"] = 'shuffle.png'
-    if text:
-        prompt["187"]["inputs"]["text"] = text
-    else:
-        prompt["187"]["inputs"]["text"] = 'product shot with a creative background, 4k, leica, commercial photography'
+    prompt = json.load(open('videoworkflow-yumo.json'))
+    # prompt["23"]["inputs"]["image"] = 'input_image.png'
+    # if text:
+    #     prompt["187"]["inputs"]["text"] = text
+    # else:
+    #     prompt["187"]["inputs"]["text"] = 'product shot with a creative background, 4k, leica, commercial photography'
     print('process_image')
 
     images = api.generate_images(prompt)
@@ -42,10 +37,10 @@ def gen_encoded_images():
     data = request.get_json()
     input_image_base64 = data['input_image']
     # shuffle_image_base64 = data['shuffle_image']
-    text = data['prompt']
-    batch_size = data['batch_size']
+    # text = data['prompt']
+    # batch_size = data['batch_size']
     # print('input', input_image_base64)
-    print('text', text)
+    # print('text', text)
 
     # Decode base64 strings to images
     input_image = base64_to_image(input_image_base64)
@@ -55,7 +50,7 @@ def gen_encoded_images():
     save_image(input_image, 'input_image.png')
     # save_image(shuffle_image, 'shuffle_image.png')
 
-    encoded_text = process_images(text, batch_size=batch_size)
+    encoded_text = process_images()
 
     if encoded_text:
         return jsonify({'encoded_text': encoded_text})
