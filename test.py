@@ -12,7 +12,7 @@ CORS(app)
 def process_images(w=768, h=768):
     api = ComfyConnector()
 
-    prompt = json.load(open('videoworkflow-yumo.json'))
+    prompt = json.load(open('workflow_yumo_api.json'))
     # prompt["23"]["inputs"]["image"] = 'input_image.png'
     # if text:
     #     prompt["187"]["inputs"]["text"] = text
