@@ -112,7 +112,7 @@
   },
   "23": {
     "inputs": {
-      "image": "00047-439850878.png",
+      "image": "input_image.png",
       "upload": "image"
     },
     "class_type": "LoadImage",
