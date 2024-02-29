@@ -12,6 +12,7 @@ import os
 import subprocess
 from typing import List
 import sys
+import base64
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -110,8 +111,17 @@ class ComfyConnector:
         
     def get_raw_webp(self, filename, subfolder, folder_type):
         data = {"filename": filename, "subfolder": subfolder, "type": folder_type}
-        url_values = urllib.parse.urlencode(data)
-        return url_values
+        # url_values = urllib.parse.urlencode(data)
+        file_path = f"/home/contact/ComfyUI/output/{filename}"
+
+        # Open the WEBP image file, read it into a binary format
+        with open(file_path, "rb") as image_file:
+            # Read the image data
+            image_data = image_file.read()
+
+        # Convert the binary data to a base64-encoded string
+        encoded_string = base64.b64encode(image_data).decode("utf-8")
+        return encoded_string
 
     def queue_prompt(self, prompt): # This method is used to queue a prompt for execution
         p = {"prompt": prompt, "client_id": self.client_id}
