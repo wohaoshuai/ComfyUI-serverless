@@ -101,6 +101,10 @@ class ComfyConnector:
     def get_history(self, prompt_id): # This method is used to retrieve the history of a prompt from the API server
         with urllib.request.urlopen(f"{self.server_address}/history/{prompt_id}") as response:
             return json.loads(response.read())
+        
+    def get_webp_image(self, filename, subfolder, folder_type):
+        image_path = 'image.webp'
+        return send_file(image_path, mimetype='image/webp')
 
     def get_image(self, filename, subfolder, folder_type): # This method is used to retrieve an image from the API server
         data = {"filename": filename, "subfolder": subfolder, "type": folder_type}
@@ -116,6 +120,39 @@ class ComfyConnector:
         return json.loads(urllib.request.urlopen(req).read())
 
     def generate_images(self, payload): # This method is used to generate images from a prompt and is the main method of this class
+        try:
+            if not self.ws.connected: # Check if the WebSocket is connected to the API server and reconnect if necessary
+                print("WebSocket is not connected. Reconnecting...")
+                self.ws.connect(self.ws_address)
+            prompt_id = self.queue_prompt(payload)['prompt_id']
+            while True:
+                out = self.ws.recv() # Wait for a message from the API server
+                if isinstance(out, str): # Check if the message is a string
+                    message = json.loads(out) # Parse the message as JSON
+                    if message['type'] == 'executing': # Check if the message is an 'executing' message
+                        data = message['data'] # Extract the data from the message
+                        if data['node'] is None and data['prompt_id'] == prompt_id:
+                            break
+            address = self.find_output_node(payload) # Find the SaveImage node; workflow MUST contain only one SaveImage node
+            history = self.get_history(prompt_id)[prompt_id]
+            filenames = eval(f"history['outputs']{address}")['images']  # Extract all images
+            images = []
+            for img_info in filenames:
+                filename = img_info['filename']
+                subfolder = img_info['subfolder']
+                folder_type = img_info['type']
+                image_data = self.get_image(filename, subfolder, folder_type)
+                image_file = io.BytesIO(image_data)
+                image = Image.open(image_file)
+                images.append(image)
+            return images
+        except Exception as e:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            line_no = exc_traceback.tb_lineno
+            error_message = f'Unhandled error at line {line_no}: {str(e)}'
+            print("generate_images - ", error_message)
+
+    def generate_webp(self, payload): # This method is used to generate images from a prompt and is the main method of this class
         try:
             if not self.ws.connected: # Check if the WebSocket is connected to the API server and reconnect if necessary
                 print("WebSocket is not connected. Reconnecting...")
@@ -173,6 +210,17 @@ class ComfyConnector:
             if isinstance(value, dict):
                 if value.get("class_type") == "SaveImage":
                     return f"['{key}']"  # Return the key containing the SaveImage class
+                result = ComfyConnector.find_output_node(value)
+                if result:
+                    return result
+        return None
+    
+    @staticmethod
+    def find_output_webp_node(json_object): # This method is used to find the node containing the SaveAnimatedWEBP class in a prompt
+        for key, value in json_object.items():
+            if isinstance(value, dict):
+                if value.get("class_type") == "SaveAnimatedWEBP":
+                    return f"['{key}']"  # Return the key containing the SaveAnimatedWEBP class
                 result = ComfyConnector.find_output_node(value)
                 if result:
                     return result

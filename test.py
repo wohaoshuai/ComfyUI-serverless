@@ -20,7 +20,7 @@ def process_images(w=768, h=768):
     #     prompt["187"]["inputs"]["text"] = 'product shot with a creative background, 4k, leica, commercial photography'
     print('process_image')
 
-    images = api.generate_images(prompt)
+    images = api.generate_webp(prompt)
     
     if images and len(images) > 0:
         # Encode the images into a single file
@@ -35,7 +35,7 @@ def process_images(w=768, h=768):
 def gen_encoded_images():
     # Parse the JSON input
     data = request.get_json()
-    # input_image_base64 = data['input_image']
+    input_image_base64 = data['input_image']
     # shuffle_image_base64 = data['shuffle_image']
     # text = data['prompt']
     # batch_size = data['batch_size']
@@ -43,11 +43,11 @@ def gen_encoded_images():
     # print('text', text)
 
     # Decode base64 strings to images
-    # input_image = base64_to_image(input_image_base64)
+    input_image = base64_to_image(input_image_base64)
     # shuffle_image = base64_to_image(shuffle_image_base64)
-    # print('image', input_image)
+    print('image', input_image)
     # Save the images as local files
-    # save_image(input_image, 'input_image.png')
+    save_image(input_image, 'input_image.png')
     # save_image(shuffle_image, 'shuffle_image.png')
 
     encoded_text = process_images()
@@ -67,12 +67,11 @@ def base64_to_image(base64_string):
 def save_image(image, filename):
     # Remove existing files with the same names if they exist
     input_image_path = os.path.join(os.path.expanduser('~/ComfyUI/input/'), 'input_image.png')
-    shuffle_image_path = os.path.join(os.path.expanduser('~/ComfyUI/input/'), 'shuffle_image.png')
 
     if os.path.exists(input_image_path):
         os.remove(input_image_path)
-    if os.path.exists(shuffle_image_path):
-        os.remove(shuffle_image_path)
+    # if os.path.exists(shuffle_image_path):
+    #     os.remove(shuffle_image_path)
 
     # Save the image as a local file
     save_path = os.path.join(os.path.expanduser('~/ComfyUI/input/'), filename)
