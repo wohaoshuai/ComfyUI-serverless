@@ -101,10 +101,6 @@ class ComfyConnector:
     def get_history(self, prompt_id): # This method is used to retrieve the history of a prompt from the API server
         with urllib.request.urlopen(f"{self.server_address}/history/{prompt_id}") as response:
             return json.loads(response.read())
-        
-    def get_webp_image(self, filename, subfolder, folder_type):
-        image_path = 'image.webp'
-        return send_file(image_path, mimetype='image/webp')
 
     def get_image(self, filename, subfolder, folder_type): # This method is used to retrieve an image from the API server
         data = {"filename": filename, "subfolder": subfolder, "type": folder_type}

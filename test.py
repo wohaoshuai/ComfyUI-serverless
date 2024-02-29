@@ -22,6 +22,7 @@ def process_images(w=768, h=768):
 
     images = api.generate_webp(prompt)
     
+    print("image length", len(images))
     if images and len(images) > 0:
         # Encode the images into a single file
         encoded_images = encode_webps(images)
