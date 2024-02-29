@@ -25,6 +25,28 @@ def encode_images(images, size=400, quality=80):
     
     return encoded_images
 
+def encode_webps(images, size=400, quality=80):
+    encoded_images = []
+    for i, image in enumerate(images):
+        # Resize the image to the specified size (default: 400x400)
+        resized_image = image.resize((size, size))
+        
+        # Compress the image with lossy quality in WEBP format
+        compressed_image = io.BytesIO()
+        resized_image.save(compressed_image, format='WEBP', quality=quality)  # Change format to 'WEBP'
+        compressed_image = compressed_image.getvalue()
+        
+        # Optionally compress the image bytes using zlib
+        # compressed_bytes = zlib.compress(compressed_image)
+        
+        # Encode the compressed bytes as base64
+        encoded_bytes = base64.b64encode(compressed_image)
+        
+        # Append the encoded image to the list
+        encoded_images.append(encoded_bytes)
+    
+    return encoded_images
+
 def save_encoded_images_to_file(encoded_images, filename):
     with open(filename, "w") as f:
         for encoded_image in encoded_images:

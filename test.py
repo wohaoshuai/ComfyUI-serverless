@@ -24,7 +24,7 @@ def process_images(w=768, h=768):
     
     if images and len(images) > 0:
         # Encode the images into a single file
-        encoded_images = encode_images(images)
+        encoded_images = encode_webps(images)
         # Save the encoded images to a string
         encoded_text = save_encoded_images_to_string(encoded_images)
         return encoded_text
