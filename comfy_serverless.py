@@ -107,6 +107,11 @@ class ComfyConnector:
         url_values = urllib.parse.urlencode(data)
         with urllib.request.urlopen(f"{self.server_address}/view?{url_values}") as response:
             return response.read()
+        
+    def get_raw_webp(self, filename, subfolder, folder_type):
+        data = {"filename": filename, "subfolder": subfolder, "type": folder_type}
+        url_values = urllib.parse.urlencode(data)
+        return url_values
 
     def queue_prompt(self, prompt): # This method is used to queue a prompt for execution
         p = {"prompt": prompt, "client_id": self.client_id}
@@ -171,10 +176,10 @@ class ComfyConnector:
                 filename = img_info['filename']
                 subfolder = img_info['subfolder']
                 folder_type = img_info['type']
-                image_data = self.get_image(filename, subfolder, folder_type)
-                image_file = io.BytesIO(image_data)
-                image = Image.open(image_file)
-                images.append(image)
+                image_data = self.get_raw_webp(filename, subfolder, folder_type)
+                # image_file = io.BytesIO(image_data)
+                # image = Image.open(image_file)
+                images.append(image_data)
             return images
         except Exception as e:
             exc_type, exc_value, exc_traceback = sys.exc_info()
