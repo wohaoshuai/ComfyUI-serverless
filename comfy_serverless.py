@@ -166,7 +166,7 @@ class ComfyConnector:
                         data = message['data'] # Extract the data from the message
                         if data['node'] is None and data['prompt_id'] == prompt_id:
                             break
-            address = self.find_output_node(payload) # Find the SaveImage node; workflow MUST contain only one SaveImage node
+            address = self.find_output_webp_node(payload) # Find the SaveImage node; workflow MUST contain only one SaveImage node
             history = self.get_history(prompt_id)[prompt_id]
             filenames = eval(f"history['outputs']{address}")['images']  # Extract all images
             images = []
