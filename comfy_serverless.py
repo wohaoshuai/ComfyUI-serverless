@@ -165,6 +165,7 @@ class ComfyConnector:
             address = self.find_output_webp_node(payload) # Find the SaveImage node; workflow MUST contain only one SaveImage node
             history = self.get_history(prompt_id)[prompt_id]
             filenames = eval(f"history['outputs']{address}")['images']  # Extract all images
+            print("filename", filename)
             images = []
             for img_info in filenames:
                 filename = img_info['filename']
