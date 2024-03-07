@@ -96,8 +96,7 @@ def gen_encoded_images():
         torch.cuda.empty_cache()
         torch.cuda.ipc_collect()
 
-    del pipeline
-    del pipeline2
+    del pipeline_text2image
     gc.collect()
     torch.cuda.empty_cache()
 
