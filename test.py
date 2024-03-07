@@ -110,22 +110,12 @@ def gen_encoded_images():
 def gen_image(prompt):
     pipe = AutoPipelineForText2Image.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
-).to("cuda")
-
-    pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
-    pipe.load_lora_weights("latent-consistency/lcm-lora-sdxl") #yes, it's a normal LoRA
-
-    results = pipe(
-        prompt="The spirit of a tamagotchi wandering in the city of Vienna",
-        num_inference_steps=4,
-        guidance_scale=0.0,
-        width=1024,
-        height=576
-    )
+    ).to("cuda")
+    image = pipe(prompt=prompt, width=1024, height=576).images[0]
     del pipe
     gc.collect()
     torch.cuda.empty_cache()
-    return results.images[0]
+    return image
 
 import subprocess
 def run_script(script_name, output_name, prompt, filename):
