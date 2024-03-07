@@ -37,7 +37,7 @@ def process_images(w=768, h=768):
 def gen_encoded_images():
     # Parse the JSON input
     data = request.get_json()
-    input_image_base64 = data['input_image']
+    # input_image_base64 = data['input_image']
     prompt = data['prompt']
 
 
