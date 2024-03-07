@@ -14,13 +14,11 @@ CORS(app)
 
 from diffusers import StableVideoDiffusionPipeline
 from diffusers import AutoPipelineForText2Image
+from diffusers import DiffusionPipeline, LCMScheduler
 import torch
 import sys 
 from diffusers.utils import load_image, export_to_video, export_to_gif
 
-pipeline_text2image = AutoPipelineForText2Image.from_pretrained(
-    "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
-).to("cuda")
 
 pipe = StableVideoDiffusionPipeline.from_pretrained(
   "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
@@ -89,7 +87,7 @@ def gen_encoded_images():
 
     # run_script('text-video.py', '', prompt, '')
     # run_script('video.py', '', prompt, '')
-    image = pipeline_text2image(prompt=prompt, width=1024, height=576).images[0]
+    image = gen_image(prompt) //pipeline_text2image(prompt=prompt, width=1024, height=576).images[0]
     image.save('image.jpg')
 
     if torch.cuda.is_available():
@@ -107,9 +105,7 @@ def gen_encoded_images():
 
     data = get_raw_data('generated.gif')
 
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
-        torch.cuda.ipc_collect()
+
 
     # encoded_text = process_images()
 
@@ -118,6 +114,23 @@ def gen_encoded_images():
     #     return jsonify({'encoded_text': encoded_text})
     # else:
     #     return jsonify({'error': 'No images generated'})
+
+def gen_image(prompt):
+    pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0").to("cuda") 
+    pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
+    pipe.load_lora_weights("latent-consistency/lcm-lora-sdxl") #yes, it's a normal LoRA
+
+    results = pipe(
+        prompt="The spirit of a tamagotchi wandering in the city of Vienna",
+        num_inference_steps=4,
+        guidance_scale=0.0,
+        width=1024,
+        height=576
+    )
+    del pipe
+    gc.collect()
+    torch.cuda.empty_cache()
+    return results.images[0]
 
 import subprocess
 def run_script(script_name, output_name, prompt, filename):
