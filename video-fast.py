@@ -3,7 +3,7 @@ import torch
 import time
 from PIL import Image
 from sfast.compilers.diffusion_pipeline_compiler import compile, CompilationConfig
-
+from diffusers.utils import load_image, export_to_video, export_to_gif
 
 def compile_model(model):
     config = CompilationConfig.Default()
@@ -40,7 +40,6 @@ pipeline.to("cuda")
 # Comment the following the line to disable stable-fast
 pipeline = compile_model(pipeline)
 
-image = ["image.jpg"]
 
 # generator = torch.manual_seed(42)
 
@@ -54,14 +53,17 @@ image = ["image.jpg"]
 # image *= 4
 
 begin = time.time()
-frames = pipeline(
-    [Image.open(i).convert("RGB") for i in image],
-    decode_chunk_size=8,
-).frames
+# frames = pipeline(
+#     [Image.open(i).convert("RGB") for i in image],
+#     decode_chunk_size=8,
+# ).frames
+image = load_image("image.jpg")
+frames = pipeline(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0).frames[0]
 end = time.time()
-
 run_time = end - begin
 print(f"run time: {run_time:.3f}s")
+
+export_to_gif(frames, 'generated.gif')
 
 peak_mem_allocated = torch.cuda.max_memory_allocated()
 peak_mem_reserved = torch.cuda.max_memory_reserved()
