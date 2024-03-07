@@ -98,6 +98,8 @@ class ComfyConnector:
             # self._process.kill()
             self._process = None
             print("API process killed")
+    
+
 
     def get_history(self, prompt_id): # This method is used to retrieve the history of a prompt from the API server
         with urllib.request.urlopen(f"{self.server_address}/history/{prompt_id}") as response:

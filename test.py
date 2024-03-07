@@ -9,6 +9,19 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+def get_raw_data(filename):
+    # url_values = urllib.parse.urlencode(data)
+    file_path = f"{filename}"
+
+    # Open the WEBP image file, read it into a binary format
+    with open(file_path, "rb") as image_file:
+        # Read the image data
+        image_data = image_file.read()
+
+    # Convert the binary data to a base64-encoded string
+    encoded_string = base64.b64encode(image_data).decode("utf-8")
+    return encoded_string
+
 def process_images(w=768, h=768):
     api = ComfyConnector()
 
@@ -57,10 +70,12 @@ def gen_encoded_images():
     # save_image(input_image, 'input_image.png')
 
     run_script('text-video.py', '', prompt, '')
+    run_script('video.py', '', prompt, '')
+    data = get_raw_data('generated.mp4')
 
     # encoded_text = process_images()
 
-    return jsonify({'encoded_text': 'finished'})
+    return jsonify({'encoded_text': data})
     # if encoded_text:
     #     return jsonify({'encoded_text': encoded_text})
     # else:
