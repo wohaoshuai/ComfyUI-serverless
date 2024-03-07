@@ -90,14 +90,6 @@ def gen_encoded_images():
     image = gen_image(prompt) #pipeline_text2image(prompt=prompt, width=1024, height=576).images[0]
     image.save('image.jpg')
 
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
-        torch.cuda.ipc_collect()
-
-    del pipeline_text2image
-    gc.collect()
-    torch.cuda.empty_cache()
-
     image = load_image("image.jpg")
     frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0).frames[0]
     export_to_gif(frames, 'generated.gif')
