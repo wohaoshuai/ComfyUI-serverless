@@ -21,7 +21,7 @@ pipeline_text2image = AutoPipelineForText2Image.from_pretrained(
 
 pipe = StableVideoDiffusionPipeline.from_pretrained(
   "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
-)
+).to("cuda")
 
 def get_raw_data(filename):
     # url_values = urllib.parse.urlencode(data)
