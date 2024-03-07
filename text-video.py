@@ -21,7 +21,7 @@ pipeline_text2image = AutoPipelineForText2Image.from_pretrained(
 ).to("cuda")
 pipe = StableVideoDiffusionPipeline.from_pretrained(
   "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
-)
+).to("cuda")
 
 prompt = "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k"
 image = pipeline_text2image(prompt=prompt_text, width=1024, height=576).images[0]
