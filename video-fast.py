@@ -38,7 +38,7 @@ pipeline = StableVideoDiffusionPipeline.from_pretrained(
 pipeline.to("cuda")
 
 # Comment the following the line to disable stable-fast
-pipeline = compile_model(pipeline)
+pipe = compile_model(pipeline)
 
 
 # generator = torch.manual_seed(42)
@@ -58,7 +58,7 @@ begin = time.time()
 #     decode_chunk_size=8,
 # ).frames
 image = load_image("image.jpg")
-frames = pipeline(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0).frames[0]
+frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0).frames[0]
 end = time.time()
 run_time = end - begin
 print(f"run time: {run_time:.3f}s")
