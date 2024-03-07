@@ -116,7 +116,7 @@ def gen_encoded_images():
     #     return jsonify({'error': 'No images generated'})
 
 def gen_image(prompt):
-    pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0").to("cuda") 
+    pipe = AutoPipelineForText2Image.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0").to("cuda") 
     pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
     pipe.load_lora_weights("latent-consistency/lcm-lora-sdxl") #yes, it's a normal LoRA
 
