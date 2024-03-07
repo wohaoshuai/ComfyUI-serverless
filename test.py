@@ -87,7 +87,7 @@ def gen_encoded_images():
 
     # run_script('text-video.py', '', prompt, '')
     # run_script('video.py', '', prompt, '')
-    image = gen_image(prompt) //pipeline_text2image(prompt=prompt, width=1024, height=576).images[0]
+    image = gen_image(prompt) #pipeline_text2image(prompt=prompt, width=1024, height=576).images[0]
     image.save('image.jpg')
 
     if torch.cuda.is_available():
