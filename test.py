@@ -86,8 +86,16 @@ def gen_encoded_images():
     # print('image', input_image)
     # save_image(input_image, 'input_image.png')
 
-    run_script('text-video.py', '', prompt, '')
-    run_script('video.py', '', prompt, '')
+    # run_script('text-video.py', '', prompt, '')
+    # run_script('video.py', '', prompt, '')
+    image = pipeline_text2image(prompt=prompt, width=1024, height=576).images[0]
+    image.save('image.jpg')
+
+    image = load_image("image.jpg")
+    frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0).frames[0]
+    export_to_gif(frames, 'generated.gif')
+    export_to_video(frames, "generated.mp4", fps=6)
+
     data = get_raw_data('generated.gif')
 
     # encoded_text = process_images()
