@@ -11,7 +11,8 @@ CORS(app)
 
 def get_raw_data(filename):
     # url_values = urllib.parse.urlencode(data)
-    file_path = f"{filename}"
+    # file_path = f"{filename}"
+    file_path = f"/home/contact/ComfyUI/output/{filename}"
 
     # Open the WEBP image file, read it into a binary format
     with open(file_path, "rb") as image_file:
@@ -71,7 +72,7 @@ def gen_encoded_images():
 
     run_script('text-video.py', '', prompt, '')
     run_script('video.py', '', prompt, '')
-    data = get_raw_data('generated.mp4')
+    data = get_raw_data('generated.gif')
 
     # encoded_text = process_images()
 
