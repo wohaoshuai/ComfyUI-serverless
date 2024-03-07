@@ -9,6 +9,22 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+from diffusers import StableVideoDiffusionPipeline
+from diffusers import AutoPipelineForText2Image
+import torch
+import sys 
+from diffusers.utils import load_image, export_to_video, export_to_gif
+
+torch.backends.cuda.matmul.allow_tf32 = True
+
+pipeline_text2image = AutoPipelineForText2Image.from_pretrained(
+    "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
+).to("cuda")
+
+pipe = StableVideoDiffusionPipeline.from_pretrained(
+  "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
+)
+
 def get_raw_data(filename):
     # url_values = urllib.parse.urlencode(data)
     # file_path = f"{filename}"
