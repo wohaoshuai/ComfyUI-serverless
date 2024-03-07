@@ -15,8 +15,6 @@ import torch
 import sys 
 from diffusers.utils import load_image, export_to_video, export_to_gif
 
-torch.backends.cuda.matmul.allow_tf32 = True
-
 pipeline_text2image = AutoPipelineForText2Image.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
 ).to("cuda")
