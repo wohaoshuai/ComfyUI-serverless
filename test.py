@@ -52,9 +52,9 @@ def gen_encoded_images():
     # Save the images as local files
     # save_image(shuffle_image, 'shuffle_image.png')
 
-    input_image = base64_to_image(input_image_base64)
-    print('image', input_image)
-    save_image(input_image, 'input_image.png')
+    # input_image = base64_to_image(input_image_base64)
+    # print('image', input_image)
+    # save_image(input_image, 'input_image.png')
 
     run_script('text-video.py', None, prompt, None)
 
