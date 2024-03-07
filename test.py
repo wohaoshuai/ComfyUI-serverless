@@ -38,6 +38,9 @@ def gen_encoded_images():
     # Parse the JSON input
     data = request.get_json()
     input_image_base64 = data['input_image']
+    prompt = data['prompt']
+
+
     # shuffle_image_base64 = data['shuffle_image']
     # text = data['prompt']
     # batch_size = data['batch_size']
@@ -45,19 +48,38 @@ def gen_encoded_images():
     # print('text', text)
 
     # Decode base64 strings to images
-    input_image = base64_to_image(input_image_base64)
     # shuffle_image = base64_to_image(shuffle_image_base64)
-    print('image', input_image)
     # Save the images as local files
-    save_image(input_image, 'input_image.png')
     # save_image(shuffle_image, 'shuffle_image.png')
 
-    encoded_text = process_images()
+    input_image = base64_to_image(input_image_base64)
+    print('image', input_image)
+    save_image(input_image, 'input_image.png')
 
-    if encoded_text:
-        return jsonify({'encoded_text': encoded_text})
+    run_script('text-video.py', None, prompt, None)
+
+    # encoded_text = process_images()
+
+    return jsonify({'encoded_text': 'finished'})
+    # if encoded_text:
+    #     return jsonify({'encoded_text': encoded_text})
+    # else:
+    #     return jsonify({'error': 'No images generated'})
+
+import subprocess
+def run_script(script_name, output_name, prompt, filename):
+    print('run_script', ['python', script_name, output_name, prompt, filename])
+    result = subprocess.run(['python', script_name, output_name, prompt, filename], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    print("Stdout:")
+    print(result.stdout)
+    print("Stderr:")
+    print(result.stderr)
+    if result.returncode == 0:
+        output_lines = result.stdout.strip().split('\n')
+        last_line = output_lines[-1]
+        return last_line
     else:
-        return jsonify({'error': 'No images generated'})
+        return False
 
 def base64_to_image(base64_string):
     # Decode the base64 string to an image
