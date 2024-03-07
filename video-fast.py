@@ -30,7 +30,7 @@ def compile_model(model):
     return model
 
 
-repo_id = "stabilityai/stable-video-diffusion-img2vid-xt"
+repo_id = "stabilityai/stable-video-diffusion-img2vid-xt-1-1"
 cache_dir = "./cache"
 pipeline = StableVideoDiffusionPipeline.from_pretrained(
     repo_id, cache_dir=cache_dir, variant="fp16", torch_dtype=torch.float16
