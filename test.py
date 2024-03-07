@@ -12,7 +12,7 @@ CORS(app)
 def get_raw_data(filename):
     # url_values = urllib.parse.urlencode(data)
     # file_path = f"{filename}"
-    file_path = f"/home/contact/ComfyUI/output/{filename}"
+    file_path = f"{filename}"
 
     # Open the WEBP image file, read it into a binary format
     with open(file_path, "rb") as image_file:
