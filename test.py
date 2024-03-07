@@ -56,7 +56,7 @@ def gen_encoded_images():
     # print('image', input_image)
     # save_image(input_image, 'input_image.png')
 
-    run_script('text-video.py', None, prompt, None)
+    run_script('text-video.py', '', prompt, '')
 
     # encoded_text = process_images()
 
