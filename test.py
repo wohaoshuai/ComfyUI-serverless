@@ -5,6 +5,9 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import random
 import os
+import torch
+import time
+import gc
 
 app = Flask(__name__)
 CORS(app)
@@ -93,13 +96,18 @@ def gen_encoded_images():
         torch.cuda.empty_cache()
         torch.cuda.ipc_collect()
 
+    del pipeline
+    del pipeline2
+    gc.collect()
+    torch.cuda.empty_cache()
+
     image = load_image("image.jpg")
     frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0).frames[0]
     export_to_gif(frames, 'generated.gif')
     export_to_video(frames, "generated.mp4", fps=6)
 
     data = get_raw_data('generated.gif')
-    
+
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
         torch.cuda.ipc_collect()
