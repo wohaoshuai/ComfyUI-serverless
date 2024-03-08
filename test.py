@@ -79,10 +79,14 @@ def resize_image(image_path, max_width=1024, max_height=576):
     Returns:
         numpy.ndarray: The resized image as a NumPy array.
     """
+    
     image = cv2.imread(image_path)
 
     # Get the current dimensions
     height, width, _ = image.shape
+    print('Original Image Size:', height, width)
+    if height == 1024 and width == 768:
+        return image
 
     # Calculate the aspect ratio
     aspect_ratio = width / height
