@@ -68,7 +68,12 @@ def gen_encoded_images():
     data = request.get_json()
     # input_image_base64 = data['input_image']
     prompt = data['prompt']
-
+    pipline = data['pipline']
+    if '--img2video' in pipe:
+        print('--img2video')
+    else:
+        image = gen_image(prompt)
+        image.save('image.jpg')
 
     # shuffle_image_base64 = data['shuffle_image']
     # text = data['prompt']
@@ -87,8 +92,7 @@ def gen_encoded_images():
 
     # run_script('text-video.py', '', prompt, '')
     # run_script('video.py', '', prompt, '')
-    image = gen_image(prompt) #pipeline_text2image(prompt=prompt, width=1024, height=576).images[0]
-    image.save('image.jpg')
+
 
     image = load_image("image.jpg")
     frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0).frames[0]
