@@ -102,7 +102,7 @@ def resize_image(image_path, max_width=1024, max_height=576):
     new_height = min(new_height, max_height)
 
     if height == 1365 and width == 1024:
-        new_height = 672
+        new_height = 682
         new_width = 512
 
     # Resize the image
