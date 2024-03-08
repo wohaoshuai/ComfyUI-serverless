@@ -68,8 +68,9 @@ def gen_encoded_images():
     data = request.get_json()
     # input_image_base64 = data['input_image']
     prompt = data['prompt']
-    pipline = data['pipline']
-    if '--img2video' in pipe:
+    pipeline = data['pipline']
+
+    if '--img2video' in pipeline:
         print('--img2video')
     else:
         image = gen_image(prompt)
