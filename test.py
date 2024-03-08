@@ -62,6 +62,43 @@ def process_images(w=768, h=768):
     else:
         return None
 
+import cv2
+
+def resize_image(image_path, max_dim=1024):
+    """
+    Resizes an image while maintaining its aspect ratio and ensuring that the maximum
+    dimension (width or height) is no greater than the specified max_dim value.
+
+    Args:
+        image_path (str): The path to the image file.
+        max_dim (int, optional): The maximum dimension (width or height) of the resized image.
+                                  Default is 1024.
+
+    Returns:
+        numpy.ndarray: The resized image as a NumPy array.
+    """
+    # Load the image
+    image = cv2.imread(image_path)
+
+    # Get the current dimensions
+    height, width, _ = image.shape
+
+    # Calculate the aspect ratio
+    aspect_ratio = width / height
+
+    # Calculate the new dimensions while maintaining the aspect ratio
+    if aspect_ratio > 1:  # Landscape
+        new_width = max_dim
+        new_height = int(max_dim / aspect_ratio)
+    else:  # Portrait or square
+        new_height = max_dim
+        new_width = int(max_dim * aspect_ratio)
+
+    # Resize the image
+    resized_image = cv2.resize(image, (new_width, new_height))
+
+    return resized_image
+
 @app.route('/gen_encoded_images', methods=['POST'])
 def gen_encoded_images():
     # Parse the JSON input
@@ -96,7 +133,12 @@ def gen_encoded_images():
 
 
     image = load_image("image.jpg")
-    frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0).frames[0]
+
+    resized_image = resize_image(image)
+    height, width, _ = resized_image.shape
+    print(f"Resized image size: {width} x {height}")
+
+    frames = pipe(resized_image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
     export_to_gif(frames, 'generated.gif')
     export_to_video(frames, "generated.mp4", fps=6)
 
