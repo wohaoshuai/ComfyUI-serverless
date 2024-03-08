@@ -132,9 +132,9 @@ def gen_encoded_images():
     # run_script('video.py', '', prompt, '')
 
 
-    image = load_image("image.jpg")
+    # image = load_image("image.jpg")
 
-    resized_image = resize_image(image)
+    resized_image = resize_image("image.jpg")
     height, width, _ = resized_image.shape
     print(f"Resized image size: {width} x {height}")
 
