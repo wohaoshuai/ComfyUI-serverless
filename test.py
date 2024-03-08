@@ -64,22 +64,21 @@ def process_images(w=768, h=768):
 
 import cv2
 
-def resize_image(image_path, max_dim=1024):
+import cv2
+
+def resize_image(image, max_width=1024, max_height=576):
     """
-    Resizes an image while maintaining its aspect ratio and ensuring that the maximum
-    dimension (width or height) is no greater than the specified max_dim value.
+    Resizes an image while maintaining its aspect ratio and ensuring that both the
+    maximum width and maximum height are not exceeded.
 
     Args:
-        image_path (str): The path to the image file.
-        max_dim (int, optional): The maximum dimension (width or height) of the resized image.
-                                  Default is 1024.
+        image (numpy.ndarray): The input image as a NumPy array.
+        max_width (int, optional): The maximum width of the resized image. Default is 1024.
+        max_height (int, optional): The maximum height of the resized image. Default is 576.
 
     Returns:
         numpy.ndarray: The resized image as a NumPy array.
     """
-    # Load the image
-    image = cv2.imread(image_path)
-
     # Get the current dimensions
     height, width, _ = image.shape
 
@@ -87,12 +86,16 @@ def resize_image(image_path, max_dim=1024):
     aspect_ratio = width / height
 
     # Calculate the new dimensions while maintaining the aspect ratio
-    if aspect_ratio > 1:  # Landscape
-        new_width = max_dim
-        new_height = int(max_dim / aspect_ratio)
+    if aspect_ratio > max_width / max_height:  # Landscape
+        new_width = max_width
+        new_height = int(max_width / aspect_ratio)
     else:  # Portrait or square
-        new_height = max_dim
-        new_width = int(max_dim * aspect_ratio)
+        new_height = max_height
+        new_width = int(max_height * aspect_ratio)
+
+    # Ensure the new dimensions do not exceed the maximum values
+    new_width = min(new_width, max_width)
+    new_height = min(new_height, max_height)
 
     # Resize the image
     resized_image = cv2.resize(image, (new_width, new_height))
@@ -132,13 +135,14 @@ def gen_encoded_images():
     # run_script('video.py', '', prompt, '')
 
 
-    # image = load_image("image.jpg")
 
     resized_image = resize_image("image.jpg")
+    cv2.imwrite("image.jpg", resized_image)
     height, width, _ = resized_image.shape
     print(f"Resized image size: {width} x {height}")
+    image = load_image("image.jpg")
 
-    frames = pipe(resized_image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
+    frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
     export_to_gif(frames, 'generated.gif')
     export_to_video(frames, "generated.mp4", fps=6)
 
