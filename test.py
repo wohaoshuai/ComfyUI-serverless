@@ -85,8 +85,6 @@ def resize_image(image_path, max_width=1024, max_height=576):
     # Get the current dimensions
     height, width, _ = image.shape
     print('Original Image Size:', height, width)
-    if height == 1024 and width == 768:
-        return image
 
     # Calculate the aspect ratio
     aspect_ratio = width / height
@@ -102,6 +100,10 @@ def resize_image(image_path, max_width=1024, max_height=576):
     # Ensure the new dimensions do not exceed the maximum values
     new_width = min(new_width, max_width)
     new_height = min(new_height, max_height)
+
+    if height == 1365 and width == 1024:
+        new_height = 672
+        new_width = 512
 
     # Resize the image
     resized_image = cv2.resize(image, (new_width, new_height))
