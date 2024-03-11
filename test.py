@@ -12,17 +12,48 @@ import gc
 app = Flask(__name__)
 CORS(app)
 
-from diffusers import StableVideoDiffusionPipeline
+# from diffusers import StableVideoDiffusionPipeline
 from diffusers import AutoPipelineForText2Image
 from diffusers import DiffusionPipeline, LCMScheduler
 import torch
 import sys 
 from diffusers.utils import load_image, export_to_video, export_to_gif
 
+from pipeline import StableVideoDiffusionPipeline
+from lcm_scheduler import AnimateLCMSVDStochasticIterativeScheduler
+from typing import Optional
+from safetensors import safe_open
+
+def get_safetensors_files():
+    models_dir = "./safetensors"
+    safetensors_files = [
+        f for f in os.listdir(models_dir) if f.endswith(".safetensors")
+    ]
+    return safetensors_files
+
+def model_select(selected_file):
+    print("load model weights", selected_file)
+    pipe.unet.cpu()
+    file_path = os.path.join("./safetensors", selected_file)
+    state_dict = {}
+    with safe_open(file_path, framework="pt", device="cpu") as f:
+        for key in f.keys():
+            state_dict[key] = f.get_tensor(key)
+    missing, unexpected = pipe.unet.load_state_dict(state_dict, strict=True)
+    pipe.unet.cuda()
+    del state_dict
+    return
 
 pipe = StableVideoDiffusionPipeline.from_pretrained(
   "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
-).to("cuda")
+)
+pipe.to("cuda")
+pipe.enable_model_cpu_offload()
+model_select("AnimateLCM-SVD-xt-1.1.safetensors")
+
+# pipe = StableVideoDiffusionPipeline.from_pretrained(
+#   "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
+# ).to("cuda")
 
 def get_raw_data(filename):
     # url_values = urllib.parse.urlencode(data)
@@ -148,11 +179,30 @@ def gen_encoded_images():
     cv2.imwrite("image.jpg", resized_image)
     height, width, _ = resized_image.shape
     print(f"Resized image size: {width} x {height}")
+
     image = load_image("image.jpg")
 
-    frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
+    max_64_bit_int = 2**63 - 1
+    seed = random.randint(0, max_64_bit_int)
+    generator = torch.manual_seed(seed)
+    with torch.autocast("cuda"):
+        frames = pipe(
+            image,
+            decode_chunk_size=8,
+            generator=generator,
+            motion_bucket_id=127,
+            height=1024,
+            width=576,
+            num_inference_steps=4,
+            min_guidance_scale=1,
+            max_guidance_scale=1.2,
+        ).frames[0]
     export_to_gif(frames, 'generated.gif')
     export_to_video(frames, "generated.mp4", fps=6)
+
+    # frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
+    # export_to_gif(frames, 'generated.gif')
+    # export_to_video(frames, "generated.mp4", fps=6)
 
     data = get_raw_data('generated.gif')
 
