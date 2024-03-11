@@ -193,7 +193,7 @@ def gen_encoded_images():
             motion_bucket_id=40,
             height=576,
             width=1024,
-            num_inference_steps=4,
+            num_inference_steps=8,
             min_guidance_scale=1,
             max_guidance_scale=1.2,
         ).frames[0]
@@ -220,11 +220,13 @@ def gen_image(prompt):
     pipe = AutoPipelineForText2Image.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
     ).to("cuda")
-    image = pipe(prompt=prompt, width=1344, height=768, num_inference_steps=30).images[0]
+    # image = pipe(prompt=prompt, width=1344, height=768, num_inference_steps=30).images[0]
+    image = pipe(prompt=prompt, width=1024, height=576, num_inference_steps=30).images[0]
     del pipe
     gc.collect()
     torch.cuda.empty_cache()
-    return image.resize((1024, 576))
+    return image
+    # return image.resize((1024, 576))
 
 import subprocess
 def run_script(script_name, output_name, prompt, filename):
