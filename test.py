@@ -170,7 +170,7 @@ def gen_image(prompt):
     pipe = AutoPipelineForText2Image.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
     ).to("cuda")
-    image = pipe(prompt=prompt, width=1024, height=576).images[0]
+    image = pipe(prompt=prompt, width=1360, height=768).images[0]
     del pipe
     gc.collect()
     torch.cuda.empty_cache()
