@@ -188,7 +188,7 @@ def gen_encoded_images():
     with torch.autocast("cuda"):
         frames = pipe(
             image,
-            decode_chunk_size=8,
+            decode_chunk_size=4,
             generator=generator,
             motion_bucket_id=40,
             height=576,
