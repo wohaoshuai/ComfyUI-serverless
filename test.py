@@ -121,7 +121,10 @@ def gen_encoded_images():
     if '--img2video' in pipeline:
         print('--img2video')
     else:
-        image = gen_image(prompt)
+        is_vertical = False
+        if '--video-v' in pipeline:
+            is_vertical = True
+        image = gen_image(prompt, is_vertical)
         image.save('image.jpg')
 
     # shuffle_image_base64 = data['shuffle_image']
@@ -150,6 +153,10 @@ def gen_encoded_images():
     print(f"Resized image size: {width} x {height}")
     image = load_image("image.jpg")
 
+    if '--video-v' in pipeline:
+        height = 1024
+        width = 576
+
     frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
     export_to_gif(frames, 'generated.gif')
     export_to_video(frames, "generated.mp4", fps=6)
@@ -166,15 +173,26 @@ def gen_encoded_images():
     # else:
     #     return jsonify({'error': 'No images generated'})
 
-def gen_image(prompt):
+def gen_image(prompt, vertical=False):
+    w = 1344
+    h = 768
+    ow = 1024
+    oh = 576
+    if vertical:
+        w = 768
+        h = 1344
+        ow = 675
+        oh = 1024
+
     pipe = AutoPipelineForText2Image.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
     ).to("cuda")
-    image = pipe(prompt=prompt, width=1344, height=768).images[0]
+    image = pipe(prompt=prompt, width=w, height=h).images[0]
     del pipe
     gc.collect()
     torch.cuda.empty_cache()
-    return image.resize((1024, 576))
+    return image.resize((ow, oh))
+
 
 import subprocess
 def run_script(script_name, output_name, prompt, filename):
