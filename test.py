@@ -104,7 +104,9 @@ def resize_image(image_path, max_width=1024, max_height=576):
     if height == 1365 and width == 1024:
         new_height = 768
         new_width = 576
-
+    if height == 1820 and width == 1024:
+        new_height = 1024
+        new_width = 576
     # Resize the image
     resized_image = cv2.resize(image, (new_width, new_height))
 
