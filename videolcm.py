@@ -29,12 +29,7 @@ def model_select(selected_file):
     del state_dict
     return
 
-pipe = StableVideoDiffusionPipeline.from_pretrained(
-  "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
-)
-pipe.to("cuda")
-pipe.enable_model_cpu_offload()
-model_select("AnimateLCM-SVD-xt-1.1.safetensors")
+
 
 max_64_bit_int = 2**63 - 1
 seed = random.randint(0, max_64_bit_int)

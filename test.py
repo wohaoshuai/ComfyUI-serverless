@@ -19,10 +19,52 @@ import torch
 import sys 
 from diffusers.utils import load_image, export_to_video, export_to_gif
 
+from lcm_scheduler import AnimateLCMSVDStochasticIterativeScheduler
+from typing import Optional
+from safetensors import safe_open
 
-pipe = StableVideoDiffusionPipeline.from_pretrained(
-  "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
-).to("cuda")
+islcm = True
+
+def get_safetensors_files():
+    models_dir = "./safetensors"
+    safetensors_files = [
+        f for f in os.listdir(models_dir) if f.endswith(".safetensors")
+    ]
+    return safetensors_files
+
+def model_select(selected_file):
+    print("load model weights", selected_file)
+    pipe.unet.cpu()
+    file_path = os.path.join("./safetensors", selected_file)
+    state_dict = {}
+    with safe_open(file_path, framework="pt", device="cpu") as f:
+        for key in f.keys():
+            state_dict[key] = f.get_tensor(key)
+    missing, unexpected = pipe.unet.load_state_dict(state_dict, strict=True)
+    pipe.unet.cuda()
+    del state_dict
+    return
+
+if islcm:
+    noise_scheduler = AnimateLCMSVDStochasticIterativeScheduler(
+        num_train_timesteps=40,
+        sigma_min=0.002,
+        sigma_max=700.0,
+        sigma_data=1.0,
+        s_noise=1.0,
+        rho=7,
+        clip_denoised=False,
+    )
+    pipe = StableVideoDiffusionPipeline.from_pretrained(
+    "stabilityai/stable-video-diffusion-img2vid-xt-1-1", scheduler=noise_scheduler, torch_dtype=torch.float16, variant="fp16"
+    )
+    pipe.to("cuda")
+    pipe.enable_model_cpu_offload()
+    model_select("AnimateLCM-SVD-xt-1.1.safetensors")
+else:
+    pipe = StableVideoDiffusionPipeline.from_pretrained(
+    "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
+    ).to("cuda")
 
 def get_raw_data(filename):
     # url_values = urllib.parse.urlencode(data)
@@ -160,7 +202,19 @@ def gen_encoded_images():
         height = 1024
         width = 576
 
-    frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
+    if islcm:
+        frames = pipe(
+            image,
+            decode_chunk_size=8,
+            motion_bucket_id=127,
+            height=576,
+            width=1024,
+            num_inference_steps=4,
+            min_guidance_scale=1,
+            max_guidance_scale=1.2,
+        ).frames[0]
+    else:
+        frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
     export_to_gif(frames, 'generated.gif')
     export_to_video(frames, "generated.mp4", fps=6)
 
