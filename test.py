@@ -176,7 +176,7 @@ def gen_encoded_images():
     # else:
     #     return jsonify({'error': 'No images generated'})
 
-def gen_image(prompt, vertical=False, isPlayground=False):
+def gen_image(prompt, vertical=False, isPlayground=True):
     w = 1344
     h = 768
     ow = 1024
@@ -194,7 +194,7 @@ def gen_image(prompt, vertical=False, isPlayground=False):
         torch_dtype=torch.float16,
         variant="fp16",
         ).to("cuda")
-        image = pipe(prompt=prompt, num_inference_steps=50, guidance_scale=3).images[0]
+        image = pipe(prompt=prompt, num_inference_steps=50, guidance_scale=3, width=w, height=h).images[0]
     else:
         pipe = AutoPipelineForText2Image.from_pretrained(
         "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
