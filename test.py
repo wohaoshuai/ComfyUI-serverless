@@ -124,9 +124,9 @@ def gen_encoded_images():
         print('--img2video')
     else:
         is_vertical = False
-        if '--video-v' in pipeline:
+        if '--video-v' in pipeline or '--video-v-q' in pipeline:
             is_vertical = True
-        image = gen_image(prompt, is_vertical)
+        image = gen_image(prompt, is_vertical, True)
         image.save('image.jpg')
 
     # shuffle_image_base64 = data['shuffle_image']
@@ -176,7 +176,7 @@ def gen_encoded_images():
     # else:
     #     return jsonify({'error': 'No images generated'})
 
-def gen_image(prompt, vertical=False):
+def gen_image(prompt, vertical=False, isPlayground=False):
     w = 1344
     h = 768
     ow = 1024
@@ -186,11 +186,20 @@ def gen_image(prompt, vertical=False):
         h = 1344
         ow = 675
         oh = 1024
-
-    pipe = AutoPipelineForText2Image.from_pretrained(
-    "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
-    ).to("cuda")
-    image = pipe(prompt=prompt, width=w, height=h).images[0]
+        
+    pipe = None
+    if isPlayground:
+        pipe = DiffusionPipeline.from_pretrained(
+        "playgroundai/playground-v2.5-1024px-aesthetic",
+        torch_dtype=torch.float16,
+        variant="fp16",
+        ).to("cuda")
+        image = pipe(prompt=prompt, num_inference_steps=50, guidance_scale=3).images[0]
+    else:
+        pipe = AutoPipelineForText2Image.from_pretrained(
+        "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
+        ).to("cuda")
+        image = pipe(prompt=prompt, width=w, height=h).images[0]
     del pipe
     gc.collect()
     torch.cuda.empty_cache()
