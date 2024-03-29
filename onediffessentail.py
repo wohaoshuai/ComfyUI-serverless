@@ -315,7 +315,7 @@ def gen_video():
     host_mem_after_used = flow._oneflow_internal.GetCPUMemoryUsed()
     print(f"CUDA Mem after: {cuda_mem_after_used / 1024:.3f}GiB")
     print(f"Host Mem after: {host_mem_after_used / 1024:.3f}GiB")
-    return output_frames
+    return output_frames[0]
 
     # if args.output_video is not None:
     #     export_to_video(output_frames[0], args.output_video, fps=args.fps)
