@@ -23,7 +23,7 @@ WIDTH = 576
 FRAMES = 25
 FPS = 6
 MOTION_BUCKET_ID = 127
-DECODE_CHUNK_SIZE = 2
+DECODE_CHUNK_SIZE = 4
 # INPUT_IMAGE = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/svd/rocket.png?download=true"
 INPUT_IMAGE = "image.jpg"
 CONTROL_IMAGE = None
