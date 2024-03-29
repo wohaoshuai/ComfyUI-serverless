@@ -26,7 +26,7 @@ MOTION_BUCKET_ID = 127
 DECODE_CHUNK_SIZE = 4
 INPUT_IMAGE = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/svd/rocket.png?download=true"
 CONTROL_IMAGE = None
-OUTPUT_VIDEO = None
+OUTPUT_VIDEO = "onediff.mp4"
 EXTRA_CALL_KWARGS = None
 ATTENTION_FP16_SCORE_ACCUM_MAX_M = 0
 CACHE_INTERVAL = 3
