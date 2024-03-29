@@ -52,7 +52,7 @@ def gen_image(prompt, vertical=False, isPlayground=True):
 
 if '--video-v' in pipeline or '--video-v-q' in pipeline:
     is_vertical = True
-gen_image(prompt_text, is_vertical, True)
+gen_image(prompt_text, True, True)
 
 # print('prompt text', prompt_text)
 
