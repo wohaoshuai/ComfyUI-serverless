@@ -262,11 +262,11 @@ for height, width in resolutions:
         control_image = load_image(args.control_image)
         control_image = control_image.resize((args.width, height), Image.LANCZOS)
 
-    def get_kwarg_inputs():
+    def get_kwarg_inputs(h=HEIGHT, w=WIDTH):
         kwarg_inputs = dict(
             image=input_image,
-            height=height,
-            width=width,
+            height=h,
+            width=w,
             num_inference_steps=args.steps,
             num_videos_per_prompt=args.batch,
             num_frames=args.frames,
