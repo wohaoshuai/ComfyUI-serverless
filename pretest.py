@@ -195,8 +195,8 @@ def gen_encoded_images():
         # image = gen_image(prompt, is_vertical, True)
         # image.save('image.jpg')
         # run_script('text-video.py', '', prompt, pipeline)
-        w = 1024
-        h = 576
+        w = 576
+        h = 1024
         image = pipe(prompt=prompt, num_inference_steps=50, guidance_scale=3, width=w, height=h).images[0]
         image.save("image.jpg")
 
