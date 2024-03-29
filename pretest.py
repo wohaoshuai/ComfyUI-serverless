@@ -189,15 +189,8 @@ def gen_encoded_images():
     if '--img2video' in pipeline:
         print('--img2video')
     else:
-        is_vertical = True
-        # is_vertical = False
-        # if '--video-v' in pipeline or '--video-v-q' in pipeline:
-        #     is_vertical = True
-        # image = gen_image(prompt, is_vertical, True)
-        # image.save('image.jpg')
-        # run_script('text-video.py', '', prompt, pipeline)
-        w = 576
-        h = 1024
+        w = 768
+        h = 1344
         image = pipe(prompt=prompt, num_inference_steps=50, guidance_scale=3, width=w, height=h).images[0]
         image.save("image.jpg")
 
