@@ -194,10 +194,11 @@ class IterationProfiler:
 
 def main():
     args = parse_args()
-    if args.deepcache:
-        from onediffx.deep_cache import StableVideoDiffusionPipeline
-    else:
-        from diffusers import StableVideoDiffusionPipeline
+    # if args.deepcache:
+    #     from onediffx.deep_cache import StableVideoDiffusionPipeline
+    # else:
+    #     from diffusers import StableVideoDiffusionPipeline
+    from onediffx.deep_cache import StableVideoDiffusionPipeline
 
     pipe = load_pipe(
         StableVideoDiffusionPipeline,
