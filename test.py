@@ -238,7 +238,7 @@ def gen_image(prompt, vertical=False, isPlayground=True):
     if vertical:
         w = 768
         h = 1344
-        ow = 675
+        ow = 576
         oh = 1024
         
     pipe = None
