@@ -308,6 +308,7 @@ def gen_video():
         kwarg_inputs["callback"] = iter_profiler.callback_on_step_end
     begin = time.time()
     output_frames = pipe(**kwarg_inputs).frames
+    torch.cuda.empty_cache()
     end = time.time()
 
     print(f"Inference time: {end - begin:.3f}s")
