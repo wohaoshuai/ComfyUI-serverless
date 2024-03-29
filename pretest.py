@@ -11,27 +11,27 @@ import gc
 
 app = Flask(__name__)
 CORS(app)
-ATTENTION_FP16_SCORE_ACCUM_MAX_M = 0
+# ATTENTION_FP16_SCORE_ACCUM_MAX_M = 0
 # from diffusers import StableVideoDiffusionPipeline
-import oneflow as flow
+# import oneflow as flow
 
-from onediffx import compile_pipe, compiler_config
-from onediffx.deep_cache import StableVideoDiffusionPipeline
+# from onediffx import compile_pipe, compiler_config
+# from onediffx.deep_cache import StableVideoDiffusionPipeline
 
 # from diffusers import AutoPipelineForText2Image
-from diffusers import DiffusionPipeline, LCMScheduler
+# from diffusers import DiffusionPipeline, LCMScheduler
 import torch
-import sys 
-from diffusers.utils import load_image, export_to_video, export_to_gif
+# import sys 
+# from diffusers.utils import load_image, export_to_video, export_to_gif
 
-from lcm_scheduler import AnimateLCMSVDStochasticIterativeScheduler
+# from lcm_scheduler import AnimateLCMSVDStochasticIterativeScheduler
 from typing import Optional
-from safetensors import safe_open
+# from safetensors import safe_open
 
-from diffusers.utils import load_image, export_to_video
-from diffusers import AutoPipelineForText2Image
-from diffusers import DiffusionPipeline, LCMScheduler
-from diffusers import AutoPipelineForText2Image
+# from diffusers.utils import load_image, export_to_video
+# from diffusers import AutoPipelineForText2Image
+from diffusers import DiffusionPipeline
+# from diffusers import AutoPipelineForText2Image
 import torch
 import sys 
 pipe = DiffusionPipeline.from_pretrained(
