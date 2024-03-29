@@ -14,9 +14,11 @@ CORS(app)
 
 # from diffusers import StableVideoDiffusionPipeline
 import oneflow as flow
+
 from onediffx import compile_pipe, compiler_config
 from onediffx.deep_cache import StableVideoDiffusionPipeline
-from diffusers import AutoPipelineForText2Image
+
+# from diffusers import AutoPipelineForText2Image
 from diffusers import DiffusionPipeline, LCMScheduler
 import torch
 import sys 
@@ -173,8 +175,9 @@ def gen_encoded_images():
         is_vertical = False
         if '--video-v' in pipeline or '--video-v-q' in pipeline:
             is_vertical = True
-        image = gen_image(prompt, is_vertical, True)
-        image.save('image.jpg')
+        # image = gen_image(prompt, is_vertical, True)
+        # image.save('image.jpg')
+        run_script('text-video.py', '', prompt, pipeline)
 
     # shuffle_image_base64 = data['shuffle_image']
     # text = data['prompt']
@@ -191,7 +194,6 @@ def gen_encoded_images():
     # print('image', input_image)
     # save_image(input_image, 'input_image.png')
 
-    # run_script('text-video.py', '', prompt, '')
     # run_script('video.py', '', prompt, '')
 
 
