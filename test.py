@@ -165,6 +165,9 @@ def resize_image(image_path, max_width=1024, max_height=576):
     if width == 1024 and height == 576:
         new_height = 576
         new_width = 1024
+    if height == 1344 and width == 768:
+        new_height = 1344
+        new_width = 768
     # Resize the image
     resized_image = cv2.resize(image, (new_width, new_height))
 
@@ -207,10 +210,11 @@ def gen_encoded_images():
 
 
     # if not '--video-v' in pipeline:
-    #     resized_image = resize_image("image.jpg")
-    #     cv2.imwrite("image.jpg", resized_image)
-    #     height, width, _ = resized_image.shape
-    #     print(f"Resized image size: {width} x {height}")
+
+    resized_image = resize_image("image.jpg")
+    cv2.imwrite("image.jpg", resized_image)
+    height, width, _ = resized_image.shape
+    print(f"Resized image size: {width} x {height}")
 
     # image = load_image("image.jpg")
     image = cv2.imread("image.jpg")
