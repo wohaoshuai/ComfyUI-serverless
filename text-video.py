@@ -18,8 +18,10 @@ if len(args) > 3:
     pipeline = args[3]
 
 def gen_image(prompt, vertical=False, isPlayground=True):
-    w = 1344
-    h = 768
+    # w = 1344
+    # h = 768
+    w = 1024
+    h = 576
     ow = 1024
     oh = 576
     if vertical:

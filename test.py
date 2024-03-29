@@ -181,7 +181,7 @@ def gen_encoded_images():
             is_vertical = True
         # image = gen_image(prompt, is_vertical, True)
         # image.save('image.jpg')
-        # run_script('text-video.py', '', prompt, pipeline)
+        run_script('text-video.py', '', prompt, pipeline)
 
     # shuffle_image_base64 = data['shuffle_image']
     # text = data['prompt']
