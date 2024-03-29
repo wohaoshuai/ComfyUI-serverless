@@ -154,7 +154,7 @@ def load_pipe(
         pipe = pipeline_cls.from_pretrained(
             model_name, scheduler=noise_scheduler, torch_dtype=torch.float16, **extra_kwargs
         )
-        pipe.enable_model_cpu_offload()
+        # pipe.enable_model_cpu_offload()
         model_select(pipe, "AnimateLCM-SVD-xt-1.1.safetensors")
         # pipe = pipeline_cls.from_pretrained(
         #     model_name, torch_dtype=torch.float16, **extra_kwargs
