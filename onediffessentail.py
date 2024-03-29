@@ -18,15 +18,16 @@ ALTER_WIDTH = None
 # Frame count: 25 frames,
 # FPS: 6,
 # Motion Bucket Id: 127.
-HEIGHT = 576
-WIDTH = 1024
+HEIGHT = 1024
+WIDTH = 576
 FRAMES = 25
 FPS = 6
 MOTION_BUCKET_ID = 127
 DECODE_CHUNK_SIZE = 4
-INPUT_IMAGE = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/svd/rocket.png?download=true"
+# INPUT_IMAGE = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/svd/rocket.png?download=true"
+INPUT_IMAGE = "image.jpg"
 CONTROL_IMAGE = None
-OUTPUT_VIDEO = "onediff.mp4"
+OUTPUT_VIDEO = ".mp4"
 EXTRA_CALL_KWARGS = None
 ATTENTION_FP16_SCORE_ACCUM_MAX_M = 0
 CACHE_INTERVAL = 3
@@ -192,129 +193,128 @@ class IterationProfiler:
         return callback_kwargs
 
 
-def main():
-    args = parse_args()
-    # if args.deepcache:
-    #     from onediffx.deep_cache import StableVideoDiffusionPipeline
-    # else:
-    #     from diffusers import StableVideoDiffusionPipeline
-    from onediffx.deep_cache import StableVideoDiffusionPipeline
+args = parse_args()
+# if args.deepcache:
+#     from onediffx.deep_cache import StableVideoDiffusionPipeline
+# else:
+#     from diffusers import StableVideoDiffusionPipeline
+from onediffx.deep_cache import StableVideoDiffusionPipeline
 
-    pipe = load_pipe(
-        StableVideoDiffusionPipeline,
-        args.model,
-        variant=args.variant,
-        custom_pipeline=args.custom_pipeline,
-        scheduler=args.scheduler,
-        lora=args.lora,
-        controlnet=args.controlnet,
+pipe = load_pipe(
+    StableVideoDiffusionPipeline,
+    args.model,
+    variant=args.variant,
+    custom_pipeline=args.custom_pipeline,
+    scheduler=args.scheduler,
+    lora=args.lora,
+    controlnet=args.controlnet,
+)
+
+height = args.height or pipe.unet.config.sample_size * pipe.vae_scale_factor
+width = args.width or pipe.unet.config.sample_size * pipe.vae_scale_factor
+
+if args.compiler == "none":
+    pass
+elif args.compiler == "oneflow":
+    # The absolute element values of K in the attention layer of SVD is too large.
+    # The unfused attention (without SDPA) and MHA with half accumulation would both overflow.
+    # But disabling all half accumulations in MHA would slow down the inference,
+    # especially for 40xx series cards.
+    # So here by partially disabling the half accumulation in MHA partially,
+    # we can get a good balance.
+    compiler_config.attention_allow_half_precision_score_accumulation_max_m = (
+        args.attention_fp16_score_accum_max_m
     )
+    pipe = compile_pipe(pipe,)
+elif args.compiler == "compile":
+    pipe.unet = torch.compile(pipe.unet)
+    if hasattr(pipe, "controlnet"):
+        pipe.controlnet = torch.compile(pipe.controlnet)
+    pipe.vae = torch.compile(pipe.vae)
+else:
+    raise ValueError(f"Unknown compiler: {args.compiler}")
 
-    height = args.height or pipe.unet.config.sample_size * pipe.vae_scale_factor
-    width = args.width or pipe.unet.config.sample_size * pipe.vae_scale_factor
+resolutions = [[height, width]]
+if args.alter_height is not None:
+    # Test dynamic shape.
+    assert args.alter_width is not None
+    resolutions.append([args.alter_height, args.alter_width])
+for height, width in resolutions:
+    input_image = load_image(args.input_image)
+    input_image.resize((width, height), Image.LANCZOS)
 
-    if args.compiler == "none":
-        pass
-    elif args.compiler == "oneflow":
-        # The absolute element values of K in the attention layer of SVD is too large.
-        # The unfused attention (without SDPA) and MHA with half accumulation would both overflow.
-        # But disabling all half accumulations in MHA would slow down the inference,
-        # especially for 40xx series cards.
-        # So here by partially disabling the half accumulation in MHA partially,
-        # we can get a good balance.
-        compiler_config.attention_allow_half_precision_score_accumulation_max_m = (
-            args.attention_fp16_score_accum_max_m
-        )
-        pipe = compile_pipe(pipe,)
-    elif args.compiler == "compile":
-        pipe.unet = torch.compile(pipe.unet)
-        if hasattr(pipe, "controlnet"):
-            pipe.controlnet = torch.compile(pipe.controlnet)
-        pipe.vae = torch.compile(pipe.vae)
-    else:
-        raise ValueError(f"Unknown compiler: {args.compiler}")
-
-    resolutions = [[height, width]]
-    if args.alter_height is not None:
-        # Test dynamic shape.
-        assert args.alter_width is not None
-        resolutions.append([args.alter_height, args.alter_width])
-    for height, width in resolutions:
-        input_image = load_image(args.input_image)
-        input_image.resize((width, height), Image.LANCZOS)
-
-        if args.control_image is None:
-            if args.controlnet is None:
-                control_image = None
-            else:
-                control_image = Image.new("RGB", (width, height))
-                draw = ImageDraw.Draw(control_image)
-                draw.ellipse(
-                    (width // 4, height // 4, width // 4 * 3, height // 4 * 3,),
-                    fill=(255, 255, 255),
-                )
-                del draw
+    if args.control_image is None:
+        if args.controlnet is None:
+            control_image = None
         else:
-            control_image = load_image(args.control_image)
-            control_image = control_image.resize((args.width, height), Image.LANCZOS)
-
-        def get_kwarg_inputs():
-            kwarg_inputs = dict(
-                image=input_image,
-                height=height,
-                width=width,
-                num_inference_steps=args.steps,
-                num_videos_per_prompt=args.batch,
-                num_frames=args.frames,
-                fps=args.fps,
-                motion_bucket_id=args.motion_bucket_id,
-                decode_chunk_size=args.decode_chunk_size,
-                generator=None
-                if args.seed is None
-                else torch.Generator().manual_seed(args.seed),
-                **(
-                    dict()
-                    if args.extra_call_kwargs is None
-                    else json.loads(args.extra_call_kwargs)
-                ),
+            control_image = Image.new("RGB", (width, height))
+            draw = ImageDraw.Draw(control_image)
+            draw.ellipse(
+                (width // 4, height // 4, width // 4 * 3, height // 4 * 3,),
+                fill=(255, 255, 255),
             )
-            if control_image is not None:
-                kwarg_inputs["control_image"] = control_image
-            if args.deepcache:
-                kwarg_inputs["cache_interval"] = args.cache_interval
-                kwarg_inputs["cache_branch"] = args.cache_branch
-            return kwarg_inputs
+            del draw
+    else:
+        control_image = load_image(args.control_image)
+        control_image = control_image.resize((args.width, height), Image.LANCZOS)
 
-        if args.warmups > 0:
-            print("Begin warmup")
-            for _ in range(args.warmups):
-                pipe(**get_kwarg_inputs())
-            print("End warmup")
+    def get_kwarg_inputs():
+        kwarg_inputs = dict(
+            image=input_image,
+            height=height,
+            width=width,
+            num_inference_steps=args.steps,
+            num_videos_per_prompt=args.batch,
+            num_frames=args.frames,
+            fps=args.fps,
+            motion_bucket_id=args.motion_bucket_id,
+            decode_chunk_size=args.decode_chunk_size,
+            generator=None
+            if args.seed is None
+            else torch.Generator().manual_seed(args.seed),
+            **(
+                dict()
+                if args.extra_call_kwargs is None
+                else json.loads(args.extra_call_kwargs)
+            ),
+        )
+        if control_image is not None:
+            kwarg_inputs["control_image"] = control_image
+        if args.deepcache:
+            kwarg_inputs["cache_interval"] = args.cache_interval
+            kwarg_inputs["cache_branch"] = args.cache_branch
+        return kwarg_inputs
 
-        kwarg_inputs = get_kwarg_inputs()
-        iter_profiler = IterationProfiler()
-        if "callback_on_step_end" in inspect.signature(pipe).parameters:
-            kwarg_inputs["callback_on_step_end"] = iter_profiler.callback_on_step_end
-        elif "callback" in inspect.signature(pipe).parameters:
-            kwarg_inputs["callback"] = iter_profiler.callback_on_step_end
-        begin = time.time()
-        output_frames = pipe(**kwarg_inputs).frames
-        end = time.time()
-
-        print(f"Inference time: {end - begin:.3f}s")
-        iter_per_sec = iter_profiler.get_iter_per_sec()
-        if iter_per_sec is not None:
-            print(f"Iterations per second: {iter_per_sec:.3f}")
-        cuda_mem_after_used = flow._oneflow_internal.GetCUDAMemoryUsed()
-        host_mem_after_used = flow._oneflow_internal.GetCPUMemoryUsed()
-        print(f"CUDA Mem after: {cuda_mem_after_used / 1024:.3f}GiB")
-        print(f"Host Mem after: {host_mem_after_used / 1024:.3f}GiB")
-
-        if args.output_video is not None:
-            export_to_video(output_frames[0], args.output_video, fps=args.fps)
-        else:
-            print("Please set `--output-video` to save the output video")
+    if args.warmups > 0:
+        print("Begin warmup")
+        for _ in range(args.warmups):
+            pipe(**get_kwarg_inputs())
+        print("End warmup")
 
 
-if __name__ == "__main__":
-    main()
+
+def gen_video():
+    kwarg_inputs = get_kwarg_inputs()
+    iter_profiler = IterationProfiler()
+    if "callback_on_step_end" in inspect.signature(pipe).parameters:
+        kwarg_inputs["callback_on_step_end"] = iter_profiler.callback_on_step_end
+    elif "callback" in inspect.signature(pipe).parameters:
+        kwarg_inputs["callback"] = iter_profiler.callback_on_step_end
+    begin = time.time()
+    output_frames = pipe(**kwarg_inputs).frames
+    end = time.time()
+
+    print(f"Inference time: {end - begin:.3f}s")
+    iter_per_sec = iter_profiler.get_iter_per_sec()
+    if iter_per_sec is not None:
+        print(f"Iterations per second: {iter_per_sec:.3f}")
+    cuda_mem_after_used = flow._oneflow_internal.GetCUDAMemoryUsed()
+    host_mem_after_used = flow._oneflow_internal.GetCPUMemoryUsed()
+    print(f"CUDA Mem after: {cuda_mem_after_used / 1024:.3f}GiB")
+    print(f"Host Mem after: {host_mem_after_used / 1024:.3f}GiB")
+    return output_frames
+
+    # if args.output_video is not None:
+    #     export_to_video(output_frames[0], args.output_video, fps=args.fps)
+    # else:
+    #     print("Please set `--output-video` to save the output video")

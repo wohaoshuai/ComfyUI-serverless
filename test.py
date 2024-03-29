@@ -50,31 +50,32 @@ def model_select(selected_file):
     del state_dict
     return
 
-if islcm:
-    noise_scheduler = AnimateLCMSVDStochasticIterativeScheduler(
-        num_train_timesteps=40,
-        sigma_min=0.002,
-        sigma_max=700.0,
-        sigma_data=1.0,
-        s_noise=1.0,
-        rho=7,
-        clip_denoised=False,
-    )
-    pipe = StableVideoDiffusionPipeline.from_pretrained(
-    "stabilityai/stable-video-diffusion-img2vid-xt-1-1", scheduler=noise_scheduler, torch_dtype=torch.float16, variant="fp16"
-    )
-    pipe.to("cuda")
-    pipe.enable_model_cpu_offload()
-    model_select("AnimateLCM-SVD-xt-1.1.safetensors")
-    compiler_config.attention_allow_half_precision_score_accumulation_max_m = (
-        ATTENTION_FP16_SCORE_ACCUM_MAX_M
-    )
-    pipe = compile_pipe(pipe,)
-else:
-    pipe = StableVideoDiffusionPipeline.from_pretrained(
-    "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
-    ).to("cuda")
-    pipe = compile_pipe(pipe,)
+from onediffessentail import *
+# if islcm:
+#     noise_scheduler = AnimateLCMSVDStochasticIterativeScheduler(
+#         num_train_timesteps=40,
+#         sigma_min=0.002,
+#         sigma_max=700.0,
+#         sigma_data=1.0,
+#         s_noise=1.0,
+#         rho=7,
+#         clip_denoised=False,
+#     )
+#     pipe = StableVideoDiffusionPipeline.from_pretrained(
+#     "stabilityai/stable-video-diffusion-img2vid-xt-1-1", scheduler=noise_scheduler, torch_dtype=torch.float16, variant="fp16"
+#     )
+#     pipe.to("cuda")
+#     pipe.enable_model_cpu_offload()
+#     model_select("AnimateLCM-SVD-xt-1.1.safetensors")
+#     compiler_config.attention_allow_half_precision_score_accumulation_max_m = (
+#         ATTENTION_FP16_SCORE_ACCUM_MAX_M
+#     )
+#     pipe = compile_pipe(pipe,)
+# else:
+#     pipe = StableVideoDiffusionPipeline.from_pretrained(
+#     "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
+#     ).to("cuda")
+#     pipe = compile_pipe(pipe,)
 
 def get_raw_data(filename):
     # url_values = urllib.parse.urlencode(data)
@@ -180,7 +181,7 @@ def gen_encoded_images():
             is_vertical = True
         # image = gen_image(prompt, is_vertical, True)
         # image.save('image.jpg')
-        run_script('text-video.py', '', prompt, pipeline)
+        # run_script('text-video.py', '', prompt, pipeline)
 
     # shuffle_image_base64 = data['shuffle_image']
     # text = data['prompt']
@@ -206,25 +207,25 @@ def gen_encoded_images():
         height, width, _ = resized_image.shape
         print(f"Resized image size: {width} x {height}")
 
-    image = load_image("image.jpg")
+    # image = load_image("image.jpg")
+    frames = gen_video()
+    # if '--video-v' in pipeline:
+    #     height = 1024
+    #     width = 576
 
-    if '--video-v' in pipeline:
-        height = 1024
-        width = 576
-
-    if islcm:
-        frames = pipe(
-            image,
-            decode_chunk_size=8,
-            motion_bucket_id=127,
-            height=height,
-            width=width,
-            num_inference_steps=4,
-            min_guidance_scale=1,
-            max_guidance_scale=1.2,
-        ).frames[0]
-    else:
-        frames = pipe(image, decode_chunk_size=4, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
+    # if islcm:
+    #     frames = pipe(
+    #         image,
+    #         decode_chunk_size=8,
+    #         motion_bucket_id=127,
+    #         height=height,
+    #         width=width,
+    #         num_inference_steps=4,
+    #         min_guidance_scale=1,
+    #         max_guidance_scale=1.2,
+    #     ).frames[0]
+    # else:
+    #     frames = pipe(image, decode_chunk_size=4, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
     export_to_gif(frames, 'generated.gif')
     export_to_video(frames, "generated.mp4", fps=6)
 
