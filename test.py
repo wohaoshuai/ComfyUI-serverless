@@ -11,7 +11,7 @@ import gc
 
 app = Flask(__name__)
 CORS(app)
-
+ATTENTION_FP16_SCORE_ACCUM_MAX_M = 0
 # from diffusers import StableVideoDiffusionPipeline
 import oneflow as flow
 
@@ -66,6 +66,9 @@ if islcm:
     pipe.to("cuda")
     pipe.enable_model_cpu_offload()
     model_select("AnimateLCM-SVD-xt-1.1.safetensors")
+    compiler_config.attention_allow_half_precision_score_accumulation_max_m = (
+        ATTENTION_FP16_SCORE_ACCUM_MAX_M
+    )
     pipe = compile_pipe(pipe,)
 else:
     pipe = StableVideoDiffusionPipeline.from_pretrained(
