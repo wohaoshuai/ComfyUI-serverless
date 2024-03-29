@@ -50,7 +50,7 @@ def model_select(selected_file):
     del state_dict
     return
 
-from onediffessentail import *
+# from onediffessentail import *
 # if islcm:
 #     noise_scheduler = AnimateLCMSVDStochasticIterativeScheduler(
 #         num_train_timesteps=40,
