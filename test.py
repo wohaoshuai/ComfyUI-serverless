@@ -209,7 +209,7 @@ def gen_encoded_images():
             motion_bucket_id=127,
             height=height,
             width=width,
-            num_inference_steps=4,
+            num_inference_steps=8,
             min_guidance_scale=1,
             max_guidance_scale=1.2,
         ).frames[0]
