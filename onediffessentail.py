@@ -273,6 +273,8 @@ for height, width in resolutions:
             fps=args.fps,
             motion_bucket_id=args.motion_bucket_id,
             decode_chunk_size=args.decode_chunk_size,
+            min_guidance_scale=1,
+            max_guidance_scale=1.2,
             generator=None
             if args.seed is None
             else torch.Generator().manual_seed(args.seed),

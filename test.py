@@ -221,8 +221,8 @@ def gen_encoded_images():
     #         height=height,
     #         width=width,
     #         num_inference_steps=4,
-    #         min_guidance_scale=1,
-    #         max_guidance_scale=1.2,
+            # min_guidance_scale=1,
+            # max_guidance_scale=1.2,
     #     ).frames[0]
     # else:
     #     frames = pipe(image, decode_chunk_size=4, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
