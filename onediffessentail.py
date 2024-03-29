@@ -7,7 +7,7 @@ CUSTOM_PIPELINE = None
 SCHEDULER = None
 LORA = None
 CONTROLNET = None
-STEPS = 4
+STEPS = 25
 SEED = None
 WARMUPS = 0
 BATCH = 1
@@ -142,19 +142,22 @@ def load_pipe(
             pipeline_cls, model_name, torch_dtype=torch.float16, **extra_kwargs
         )
     else:
-        noise_scheduler = AnimateLCMSVDStochasticIterativeScheduler(
-        num_train_timesteps=40,
-        sigma_min=0.002,
-        sigma_max=700.0,
-        sigma_data=1.0,
-        s_noise=1.0,
-        rho=7,
-        clip_denoised=False,
-        )
+        # noise_scheduler = AnimateLCMSVDStochasticIterativeScheduler(
+        # num_train_timesteps=40,
+        # sigma_min=0.002,
+        # sigma_max=700.0,
+        # sigma_data=1.0,
+        # s_noise=1.0,
+        # rho=7,
+        # clip_denoised=False,
+        # )
+        # pipe = pipeline_cls.from_pretrained(
+        #     model_name, scheduler=None, torch_dtype=torch.float16, **extra_kwargs
+        # )
+        # model_select(pipe, "AnimateLCM-SVD-xt-1.1.safetensors")
         pipe = pipeline_cls.from_pretrained(
-            model_name, scheduler=noise_scheduler, torch_dtype=torch.float16, **extra_kwargs
+            model_name, torch_dtype=torch.float16, **extra_kwargs
         )
-        model_select(pipe, "AnimateLCM-SVD-xt-1.1.safetensors")
         
     if scheduler is not None:
         scheduler_cls = getattr(importlib.import_module("diffusers"), scheduler)
