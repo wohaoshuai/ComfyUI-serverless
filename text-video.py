@@ -44,7 +44,7 @@ def gen_image(prompt, vertical=False, isPlayground=True):
     del pipe
     gc.collect()
     torch.cuda.empty_cache()
-    image.resize((ow, oh))
+    image = image.resize((ow, oh))
     image.save("image.jpg")
 
 if '--video-v' in pipeline or '--video-v-q' in pipeline:
