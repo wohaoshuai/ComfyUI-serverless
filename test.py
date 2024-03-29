@@ -206,11 +206,11 @@ def gen_encoded_images():
     # run_script('video.py', '', prompt, '')
 
 
-    if not '--video-v' in pipeline:
-        resized_image = resize_image("image.jpg")
-        cv2.imwrite("image.jpg", resized_image)
-        height, width, _ = resized_image.shape
-        print(f"Resized image size: {width} x {height}")
+    # if not '--video-v' in pipeline:
+    #     resized_image = resize_image("image.jpg")
+    #     cv2.imwrite("image.jpg", resized_image)
+    #     height, width, _ = resized_image.shape
+    #     print(f"Resized image size: {width} x {height}")
 
     # image = load_image("image.jpg")
     frames = gen_video()
