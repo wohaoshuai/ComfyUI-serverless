@@ -37,6 +37,7 @@ def gen_image(prompt, vertical=False, isPlayground=True):
         torch_dtype=torch.float16,
         variant="fp16",
         ).to("cuda")
+        pipe.enable_xformers_memory_efficient_attention()
         image = pipe(prompt=prompt, num_inference_steps=50, guidance_scale=3, width=w, height=h).images[0]
     else:
         pipe = AutoPipelineForText2Image.from_pretrained(
