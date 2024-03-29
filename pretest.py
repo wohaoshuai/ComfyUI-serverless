@@ -28,6 +28,19 @@ from lcm_scheduler import AnimateLCMSVDStochasticIterativeScheduler
 from typing import Optional
 from safetensors import safe_open
 
+from diffusers.utils import load_image, export_to_video
+from diffusers import AutoPipelineForText2Image
+from diffusers import DiffusionPipeline, LCMScheduler
+from diffusers import AutoPipelineForText2Image
+import torch
+import sys 
+pipe = DiffusionPipeline.from_pretrained(
+"playgroundai/playground-v2.5-1024px-aesthetic",
+torch_dtype=torch.float16,
+variant="fp16",
+).to("cuda")
+pipe.enable_xformers_memory_efficient_attention()
+
 islcm = False
 
 def get_safetensors_files():
@@ -181,7 +194,12 @@ def gen_encoded_images():
             is_vertical = True
         # image = gen_image(prompt, is_vertical, True)
         # image.save('image.jpg')
-        run_script('text-video.py', '', prompt, pipeline)
+        # run_script('text-video.py', '', prompt, pipeline)
+        w = 1024
+        h = 576
+        image = pipe(prompt=prompt, num_inference_steps=50, guidance_scale=3, width=w, height=h).images[0]
+        image.save("image.jpg")
+
 
     # shuffle_image_base64 = data['shuffle_image']
     # text = data['prompt']
