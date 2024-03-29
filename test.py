@@ -11,14 +11,9 @@ import gc
 
 app = Flask(__name__)
 CORS(app)
-ATTENTION_FP16_SCORE_ACCUM_MAX_M = 0
-# from diffusers import StableVideoDiffusionPipeline
-import oneflow as flow
 
-from onediffx import compile_pipe, compiler_config
-from onediffx.deep_cache import StableVideoDiffusionPipeline
-
-# from diffusers import AutoPipelineForText2Image
+from diffusers import StableVideoDiffusionPipeline
+from diffusers import AutoPipelineForText2Image
 from diffusers import DiffusionPipeline, LCMScheduler
 import torch
 import sys 
@@ -28,7 +23,7 @@ from lcm_scheduler import AnimateLCMSVDStochasticIterativeScheduler
 from typing import Optional
 from safetensors import safe_open
 
-islcm = False
+islcm = True
 
 def get_safetensors_files():
     models_dir = "./safetensors"
@@ -50,32 +45,26 @@ def model_select(selected_file):
     del state_dict
     return
 
-from onediffessentail import *
-# if islcm:
-#     noise_scheduler = AnimateLCMSVDStochasticIterativeScheduler(
-#         num_train_timesteps=40,
-#         sigma_min=0.002,
-#         sigma_max=700.0,
-#         sigma_data=1.0,
-#         s_noise=1.0,
-#         rho=7,
-#         clip_denoised=False,
-#     )
-#     pipe = StableVideoDiffusionPipeline.from_pretrained(
-#     "stabilityai/stable-video-diffusion-img2vid-xt-1-1", scheduler=noise_scheduler, torch_dtype=torch.float16, variant="fp16"
-#     )
-#     pipe.to("cuda")
-#     pipe.enable_model_cpu_offload()
-#     model_select("AnimateLCM-SVD-xt-1.1.safetensors")
-#     compiler_config.attention_allow_half_precision_score_accumulation_max_m = (
-#         ATTENTION_FP16_SCORE_ACCUM_MAX_M
-#     )
-#     pipe = compile_pipe(pipe,)
-# else:
-#     pipe = StableVideoDiffusionPipeline.from_pretrained(
-#     "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
-#     ).to("cuda")
-#     pipe = compile_pipe(pipe,)
+if islcm:
+    noise_scheduler = AnimateLCMSVDStochasticIterativeScheduler(
+        num_train_timesteps=40,
+        sigma_min=0.002,
+        sigma_max=700.0,
+        sigma_data=1.0,
+        s_noise=1.0,
+        rho=7,
+        clip_denoised=False,
+    )
+    pipe = StableVideoDiffusionPipeline.from_pretrained(
+    "stabilityai/stable-video-diffusion-img2vid-xt-1-1", scheduler=noise_scheduler, torch_dtype=torch.float16, variant="fp16"
+    )
+    pipe.to("cuda")
+    pipe.enable_model_cpu_offload()
+    model_select("AnimateLCM-SVD-xt-1.1.safetensors")
+else:
+    pipe = StableVideoDiffusionPipeline.from_pretrained(
+    "stabilityai/stable-video-diffusion-img2vid-xt-1-1", torch_dtype=torch.float16, variant="fp16"
+    ).to("cuda")
 
 def get_raw_data(filename):
     # url_values = urllib.parse.urlencode(data)
@@ -153,24 +142,13 @@ def resize_image(image_path, max_width=1024, max_height=576):
     # Ensure the new dimensions do not exceed the maximum values
     new_width = min(new_width, max_width)
     new_height = min(new_height, max_height)
-    if height == 1024 and width == 576:
-        new_height = 1024
-        new_width = 576
+
     if height == 1365 and width == 1024:
         new_height = 768
         new_width = 576
     if height == 1820 and width == 1024:
         new_height = 1024
         new_width = 576
-    if width == 1024 and height == 576:
-        new_height = 576
-        new_width = 1024
-    if height == 1344 and width == 768:
-        new_height = 1024
-        new_width = 576
-    if height == 768 and width == 1344:
-        new_height = 576
-        new_width = 1024
     # Resize the image
     resized_image = cv2.resize(image, (new_width, new_height))
 
@@ -190,9 +168,8 @@ def gen_encoded_images():
         is_vertical = False
         if '--video-v' in pipeline or '--video-v-q' in pipeline:
             is_vertical = True
-        # image = gen_image(prompt, is_vertical, True)
-        # image.save('image.jpg')
-        run_script('text-video.py', '', prompt, pipeline)
+        image = gen_image(prompt, is_vertical, True)
+        image.save('image.jpg')
 
     # shuffle_image_base64 = data['shuffle_image']
     # text = data['prompt']
@@ -209,38 +186,35 @@ def gen_encoded_images():
     # print('image', input_image)
     # save_image(input_image, 'input_image.png')
 
+    # run_script('text-video.py', '', prompt, '')
     # run_script('video.py', '', prompt, '')
 
 
-    # if not '--video-v' in pipeline:
+    if not '--video-v' in pipeline:
+        resized_image = resize_image("image.jpg")
+        cv2.imwrite("image.jpg", resized_image)
+        height, width, _ = resized_image.shape
+        print(f"Resized image size: {width} x {height}")
 
-    resized_image = resize_image("image.jpg")
-    cv2.imwrite("image.jpg", resized_image)
-    height, width, _ = resized_image.shape
-    print(f"Resized image size: {width} x {height}")
+    image = load_image("image.jpg")
 
-    # image = load_image("image.jpg")
-    image = cv2.imread("image.jpg")
-    # Get the current dimensions
-    height, width, _ = image.shape
-    frames = gen_video(w=width, h=height)
-    # if '--video-v' in pipeline:
-    #     height = 1024
-    #     width = 576
+    if '--video-v' in pipeline:
+        height = 1024
+        width = 576
 
-    # if islcm:
-    #     frames = pipe(
-    #         image,
-    #         decode_chunk_size=8,
-    #         motion_bucket_id=127,
-    #         height=height,
-    #         width=width,
-    #         num_inference_steps=4,
-            # min_guidance_scale=1,
-            # max_guidance_scale=1.2,
-    #     ).frames[0]
-    # else:
-    #     frames = pipe(image, decode_chunk_size=4, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
+    if islcm:
+        frames = pipe(
+            image,
+            decode_chunk_size=8,
+            motion_bucket_id=127,
+            height=height,
+            width=width,
+            num_inference_steps=4,
+            min_guidance_scale=1,
+            max_guidance_scale=1.2,
+        ).frames[0]
+    else:
+        frames = pipe(image, decode_chunk_size=8, motion_bucket_id=127, noise_aug_strength=0.0, height=height, width=width).frames[0]
     export_to_gif(frames, 'generated.gif')
     export_to_video(frames, "generated.mp4", fps=6)
 
@@ -264,7 +238,7 @@ def gen_image(prompt, vertical=False, isPlayground=True):
     if vertical:
         w = 768
         h = 1344
-        ow = 576
+        ow = 675
         oh = 1024
         
     pipe = None
