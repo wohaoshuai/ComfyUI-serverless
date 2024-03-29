@@ -299,7 +299,7 @@ for height, width in resolutions:
 
 
 
-def gen_video():
+def gen_video(w=576, h=1024):
     kwarg_inputs = get_kwarg_inputs()
     iter_profiler = IterationProfiler()
     if "callback_on_step_end" in inspect.signature(pipe).parameters:

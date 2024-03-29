@@ -213,7 +213,10 @@ def gen_encoded_images():
     #     print(f"Resized image size: {width} x {height}")
 
     # image = load_image("image.jpg")
-    frames = gen_video()
+    image = cv2.imread("image.jpg")
+    # Get the current dimensions
+    height, width, _ = image.shape
+    frames = gen_video(w=width, h=height)
     # if '--video-v' in pipeline:
     #     height = 1024
     #     width = 576
