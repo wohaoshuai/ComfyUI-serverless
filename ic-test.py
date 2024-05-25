@@ -27,7 +27,7 @@ def process_images(text, batch_size = 16, w=768, h=768):
     # prompt["14"]["inputs"]["width"] = w
     # prompt["14"]["inputs"]["height"] = h
 
-    prompt["11"]["inputs"]["image"] = 'input_image.png'
+    prompt["11"]["inputs"]["image"] = 'image.jpg'
     # prompt["198"]["inputs"]["image"] = 'shuffle.png'
     if text:
         prompt["6"]["inputs"]["text"] = text
