@@ -54,7 +54,7 @@ def gen_encoded_images():
     # input_image_base64 = data['input_image']
     # shuffle_image_base64 = data['shuffle_image']
     text = data['prompt']
-    batch_size = data['batch_size']
+    # batch_size = data['batch_size']
     # print('input', input_image_base64)
     print('text', text)
 
@@ -66,7 +66,7 @@ def gen_encoded_images():
     # save_image(input_image, 'input_image.png')
     # save_image(shuffle_image, 'shuffle_image.png')
 
-    encoded_text = process_images(text, batch_size=batch_size)
+    encoded_text = process_images(text, batch_size=1)
 
     if encoded_text:
         return jsonify({'encoded_text': encoded_text})
