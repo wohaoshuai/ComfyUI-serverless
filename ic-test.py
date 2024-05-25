@@ -9,6 +9,29 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+import torch
+from PIL import Image
+from transformers import BlipProcessor, BlipForConditionalGeneration
+processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large", torch_dtype=torch.float16).to("cuda")
+
+@app.route('/blip2', methods=['POST'])
+def run_blip2():
+    input = request.form.get('input')
+    text = request.form.get('text')
+    input_path = './input_images/' + input
+
+    raw_image = Image.open(input_path).convert('RGB')
+
+    if text is not None:
+        inputs = processor(raw_image, text, return_tensors="pt").to("cuda", torch.float16)
+        out = model.generate(**inputs)
+        return processor.decode(out[0], skip_special_tokens=True)
+    else:
+        inputs = processor(raw_image, return_tensors="pt").to("cuda", torch.float16)
+        out = model.generate(**inputs)
+        return processor.decode(out[0], skip_special_tokens=True)
+
 def process_images(text, batch_size = 16, w=768, h=768):
     api = ComfyConnector()
 
