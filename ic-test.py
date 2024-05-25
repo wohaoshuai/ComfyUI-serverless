@@ -75,7 +75,7 @@ def convert_transparent_to_white(image_path):
     im = Image.open(image_path).convert("RGBA")
     
     # Create a new image with a white background
-    white_bg = Image.new("RGBA", im.size, (255, 255, 255, 255))
+    white_bg = Image.new("RGBA", im.size, (0, 255, 0, 255))
     
     # Paste the original image onto the white background
     white_bg.paste(im, (0, 0), im)
