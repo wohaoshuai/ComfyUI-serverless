@@ -58,6 +58,8 @@ def gen_encoded_images():
     # print('input', input_image_base64)
     print('text', text)
 
+    im = Image.open('image.png')
+    save_image(im, 'image.png')
     # Decode base64 strings to images
     # input_image = base64_to_image(input_image_base64)
     # shuffle_image = base64_to_image(shuffle_image_base64)
