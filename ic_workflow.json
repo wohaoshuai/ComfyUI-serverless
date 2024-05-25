@@ -1,0 +1,288 @@
+{
+  "4": {
+    "inputs": {
+      "ckpt_name": "realisticVisionV20_v20.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": [
+        "14",
+        1
+      ],
+      "height": [
+        "14",
+        2
+      ],
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "shampoo in the bathroom, fruits and studio",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "lowres, bad anatomy, bad hands, cropped, worst quality, cloudy",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "11": {
+    "inputs": {
+      "image": "截屏2023-10-25 10.03.03.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "12": {
+    "inputs": {
+      "rem_mode": "RMBG-1.4",
+      "image_output": "Preview",
+      "save_prefix": "ComfyUI",
+      "images": [
+        "14",
+        0
+      ]
+    },
+    "class_type": "easy imageRemBg",
+    "_meta": {
+      "title": "Image Remove Bg"
+    }
+  },
+  "14": {
+    "inputs": {
+      "width": 600,
+      "height": 600,
+      "interpolation": "nearest",
+      "keep_proportion": true,
+      "condition": "always",
+      "multiple_of": 0,
+      "image": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "ImageResize+",
+    "_meta": {
+      "title": "🔧 Image Resize"
+    }
+  },
+  "16": {
+    "inputs": {
+      "seed": 403692867425923,
+      "steps": 30,
+      "cfg": 3,
+      "sampler_name": "dpmpp_2m_sde_gpu",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "35",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "17": {
+    "inputs": {
+      "samples": [
+        "16",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "18": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "17",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "23": {
+    "inputs": {
+      "unet_name": "iclight_sd15_fc_unet_ldm.safetensors"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "UNETLoader"
+    }
+  },
+  "24": {
+    "inputs": {
+      "pixels": [
+        "36",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEEncodeArgMax",
+    "_meta": {
+      "title": "VAE Encode ArgMax"
+    }
+  },
+  "35": {
+    "inputs": {
+      "model": [
+        "4",
+        0
+      ],
+      "ic_model": [
+        "23",
+        0
+      ],
+      "c_concat": [
+        "24",
+        0
+      ]
+    },
+    "class_type": "ICLightAppply",
+    "_meta": {
+      "title": "ICLightAppply"
+    }
+  },
+  "36": {
+    "inputs": {
+      "image": [
+        "12",
+        0
+      ],
+      "alpha": [
+        "12",
+        1
+      ]
+    },
+    "class_type": "ICLightApplyMaskGrey",
+    "_meta": {
+      "title": "IC Light Apply Mask Grey"
+    }
+  },
+  "38": {
+    "inputs": {
+      "x": 0,
+      "y": 0,
+      "resize_source": true,
+      "destination": [
+        "17",
+        0
+      ],
+      "source": [
+        "11",
+        0
+      ],
+      "mask": [
+        "12",
+        1
+      ]
+    },
+    "class_type": "ImageCompositeMasked",
+    "_meta": {
+      "title": "ImageCompositeMasked"
+    }
+  },
+  "39": {
+    "inputs": {
+      "mask": [
+        "12",
+        1
+      ]
+    },
+    "class_type": "InvertMask",
+    "_meta": {
+      "title": "InvertMask"
+    }
+  },
+  "40": {
+    "inputs": {
+      "images": [
+        "17",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "41": {
+    "inputs": {
+      "mask": [
+        "12",
+        1
+      ]
+    },
+    "class_type": "PreviewMask_",
+    "_meta": {
+      "title": "Preview Mask"
+    }
+  },
+  "42": {
+    "inputs": {
+      "images": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  }
+}
