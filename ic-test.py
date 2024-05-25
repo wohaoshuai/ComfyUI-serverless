@@ -102,5 +102,9 @@ def get_encoded_images():
     else:
         return jsonify({'error': 'No images generated'})
 
+@app.route('/hello', methods=['GET'])
+def hello():
+    return jsonify({'status': 200})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
