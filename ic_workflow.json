@@ -261,18 +261,6 @@
       "title": "Preview Image"
     }
   },
-  "41": {
-    "inputs": {
-      "mask": [
-        "12",
-        1
-      ]
-    },
-    "class_type": "PreviewMask_",
-    "_meta": {
-      "title": "Preview Mask"
-    }
-  },
   "42": {
     "inputs": {
       "images": [
