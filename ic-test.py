@@ -70,6 +70,21 @@ def process_images(text, batch_size = 16, w=768, h=768):
     else:
         return None
 
+def convert_transparent_to_white(image_path):
+    # Open the image
+    im = Image.open(image_path).convert("RGBA")
+    
+    # Create a new image with a white background
+    white_bg = Image.new("RGBA", im.size, (255, 255, 255, 255))
+    
+    # Paste the original image onto the white background
+    white_bg.paste(im, (0, 0), im)
+    
+    # Convert to RGB (removing alpha channel)
+    white_bg = white_bg.convert("RGB")
+    
+    return white_bg
+
 @app.route('/gen_encoded_images', methods=['POST'])
 def gen_encoded_images():
     # Parse the JSON input
@@ -83,7 +98,9 @@ def gen_encoded_images():
 
     im = Image.open('image.png')
     im.save('foreground.png')
-    save_image(im, 'image.png')
+
+    white = convert_transparent_to_white('image.png')
+    save_image(white, 'image.png')
     # Decode base64 strings to images
     # input_image = base64_to_image(input_image_base64)
     # shuffle_image = base64_to_image(shuffle_image_base64)
