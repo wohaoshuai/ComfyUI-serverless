@@ -19,9 +19,9 @@ model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-capt
 def run_blip2():
     input = request.form.get('input')
     text = request.form.get('text')
-    input_path = './input_images/' + input
+    # input_path = './input_images/' + input
 
-    raw_image = Image.open(input_path).convert('RGB')
+    raw_image = Image.open(input).convert('RGB')
 
     if text is not None:
         inputs = processor(raw_image, text, return_tensors="pt").to("cuda", torch.float16)
