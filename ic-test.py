@@ -59,6 +59,7 @@ def gen_encoded_images():
     print('text', text)
 
     im = Image.open('image.png')
+    Image.save('foreground.png')
     save_image(im, 'image.png')
     # Decode base64 strings to images
     # input_image = base64_to_image(input_image_base64)
