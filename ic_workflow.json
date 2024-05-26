@@ -1,7 +1,7 @@
 {
   "4": {
     "inputs": {
-      "ckpt_name": "realisticVisionV20_v20.safetensors"
+      "ckpt_name": "icbinpICantBelieveIts_newYear.safetensors"
     },
     "class_type": "CheckpointLoaderSimple",
     "_meta": {
