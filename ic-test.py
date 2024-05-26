@@ -35,7 +35,7 @@ def run_blip2():
 def process_images(text, batch_size = 16, w=768, h=768):
     api = ComfyConnector()
 
-    prompt = json.load(open('hyper-cc.json'))
+    prompt = json.load(open('ic_workflow.json'))
 
     # input image
 
