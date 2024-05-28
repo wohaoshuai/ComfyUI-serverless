@@ -35,7 +35,7 @@ def run_blip2():
 def process_images(text, batch_size = 16, w=768, h=768):
     api = ComfyConnector()
 
-    prompt = json.load(open('ic_workflow.json'))
+    prompt = json.load(open('hyper-ic.json'))
 
     # input image
 
@@ -53,7 +53,7 @@ def process_images(text, batch_size = 16, w=768, h=768):
     prompt["11"]["inputs"]["image"] = 'image.png'
     # prompt["198"]["inputs"]["image"] = 'shuffle.png'
     if text:
-        prompt["6"]["inputs"]["text"] = text
+        prompt["6"]["inputs"]["text"] = text + ", RAW photo, subject, 8k uhd, dslr, high quality, film grain, Fujifilm XT3"
     else:
         prompt["6"]["inputs"]["text"] = 'product shot with a creative background, 4k, leica, commercial photography'
     print('process_image')
