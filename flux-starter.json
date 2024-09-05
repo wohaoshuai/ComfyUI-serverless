@@ -111,7 +111,7 @@
   "17": {
     "inputs": {
       "scheduler": "simple",
-      "steps": 25,
+      "steps": 20,
       "denoise": 1,
       "model": [
         "30",
@@ -163,8 +163,8 @@
   },
   "27": {
     "inputs": {
-      "width": 1024,
-      "height": 1024,
+      "width": 768,
+      "height": 768,
       "batch_size": 1
     },
     "class_type": "EmptySD3LatentImage",
