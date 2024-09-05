@@ -78,8 +78,8 @@
   },
   "14": {
     "inputs": {
-      "width": 768,
-      "height": 768,
+      "width": 1024,
+      "height": 1024,
       "interpolation": "nearest",
       "keep_proportion": true,
       "condition": "always",
